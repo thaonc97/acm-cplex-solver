@@ -99,6 +99,7 @@ class AlphaCalculator:
         
         return alpha
     
+
     def _formula_1(self):
         """
         Tính theo công thức của thầy Sơn + đều theo ngày a Phong
@@ -174,7 +175,7 @@ class AlphaCalculator:
         
         return alpha
     
-    @staticmethod
+
     def _formula_2(self):
         """
         Tính theo công thức đều theo ngày ez của a Phong
@@ -214,7 +215,7 @@ class AlphaCalculator:
                     
         return alpha
     
-    @staticmethod
+    
     def _formula_3(self):
         """
         Tính theo công thức đều theo ngày ez của a Phong, nhưng:
@@ -237,8 +238,7 @@ class AlphaCalculator:
         t_0 = self.paper_model.t_0
         ratio = self.paper_model.share_rate
         priority = self.paper_model.priority
-        share_type = self.paper_model.share_type
-        campaign_list = self.paper_model.campaign_list
+        share_type = self.paper_model.share_type        
         cl = self.paper_model.cl          
         w = self.paper_model.w 
         # Compute cl
@@ -285,7 +285,7 @@ class AlphaCalculator:
 
         return alpha
 
-    def _calculate_d_t_u(d,w):
+    def _calculate_d_t_u(self,d,w):
         """TÍnh d_t_u tức lượng view mong muốn chạy của campaign từng ngày
 
         Parameters

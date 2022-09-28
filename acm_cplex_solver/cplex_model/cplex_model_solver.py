@@ -22,10 +22,10 @@ class CplexModelSolver:
             "SOFT_CONSTRAINT": self._solve_b_c_soft
         }
         # Compute alpha
-        self.model.alpha = Converter.calculate_alpha(self.model, self.parameter.alpha_formula)
+        self.paper_model.alpha = Converter.calculate_alpha(self.paper_model, self.parameter.alpha_formula)
 
         choosen_method = methods[self.parameter.method]        
-        solve_result= choosen_method(self.model, self.parameter)
+        solve_result= choosen_method(self.paper_model, self.parameter)
                             
         return solve_result
     
