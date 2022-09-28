@@ -1,0 +1,92 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+
+package AcmCplexSolver;
+
+service AcmCplexSolverService {
+    rpc Solve(ACSSolveRequest) returns (ACSResultList) {};
+}
+
+enum ShareType {
+    SOFT = 0;
+    NETWORK_HARD = 1; // NETWORK không được lấn sang
+	DOMAIN_HARD = 2; // DOMAIN không được lấn sang 
+	HARD = 3 ; //Cả 2 bên đều không được lấn 
+}
+
+enum CampaignType {   
+    DEFAULT = 0;
+    BANNER_STATIC = 1;
+    BANNER_EFFECT = 2;
+    BANNER_SLIDE = 3;
+    CPA = 4;
+	SURVEY = 5;
+	VIDEO = 6;
+	GAME = 7;
+	TEXT_MATCHING = 8;
+	OTHER = 9;
+}
+enum CampaignPriority {
+	CLASS_A = 0;
+    CLASS_B = 1;
+    CLASS_C = 2;
+}
+
+
+message ACSSolveRequest {
+    ACSModel model = 1;
+    ACSParameter parameter = 2;
+    ACSOption option = 3;
+}
+
+message ACSModel {
+    repeated ACSPlace places = 1;
+    repeated ACSCampaign campaigns_class_b_c = 2; // LƯU Ý : sắp xếp theo thứ tự tăng dần của id, network xong rồi đến domain
+    repeated ACSCampaign campaigns_class_a = 3; // LƯU Ý : sắp xếp theo thứ tự tăng dần của id, network xong rồi đến domain
+}
+
+message ACSPlace {
+    int32 id = 1;
+    repeated float ctrs = 2;
+    repeated float views = 3;
+    float share_rate = 4;
+    int32 share_type = 5; // enum lấy từ base
+
+}
+
+message ACSWeight {
+    int32 date = 1;
+    int32 weight = 2;
+}
+
+message ACSCampaign {
+    int32 id = 1;
+    CampaignPriority priority = 2; // enum base
+    float total = 3;
+    repeated int32 place_ids = 4;
+    repeated int32 dates = 5; // dates = [fromDate, toDate] 
+    repeated ACSWeight weights = 7;
+    CampaignType type = 8;
+    bool is_network = 9;
+    google.protobuf.Int64Value group_id = 10; // Nếu có group thì total của các campaign cùng group phải = nhau, và được xem là total chung của cả nhóm
+}
+
+message ACSParameter {
+    int32 time_limit_in_seconds = 1; // thời gian chạy tối đa, tính bằng s
+    float evenness_priority = 2; // khoảng 0 - 1, là mức độ ưu tiền đều - tối ưu tài nguyên. Bằng 0 là max tài nguyên, Bằng 1 là max đều
+
+}
+
+message ACSOption {
+    bool include_a_class_if_b_and_c_enough = 1; // chỉ giải cấp A nếu B,C đủ
+}
+
+message ACSResult {
+    //google.protobuf.Timestamp date = 1;
+    string type = 2;
+    bool isSystem = 3;
+}
+
+message ACSResultList {
+    repeated ACSResult results = 1;
+}
