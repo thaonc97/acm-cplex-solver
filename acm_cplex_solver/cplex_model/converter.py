@@ -1,6 +1,7 @@
 from acm_cplex_solver.cplex_model.alpha_calculator import AlphaCalculator
 from acm_cplex_solver.cplex_model.paper_model import PaperModel
 from acm_cplex_solver.cplex_model.solver_parameter import SolverParameter
+from acm_cplex_solver.cplex_model.validate import Validator
 from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSOption, ACSParameter, ACSSolveRequest
 
 import numpy as np
@@ -12,8 +13,15 @@ class Converter:
     def convert_grpc_parameter_to_parameter(acs_parameter : ACSParameter) -> SolverParameter:
         return SolverParameter()
 
+    
+    @staticmethod
+    def convert_grpc_option_to_option(acs_option : ACSOption):
+        pass # TODO
+
+
     @staticmethod
     def convert_grpc_message_to_model(acs_model : ACSModel) -> PaperModel:
+
         
         places = acs_model.places
         campaigns_class_b_c = acs_model.campaigns_class_b_c 
@@ -103,6 +111,7 @@ class Converter:
         paper_model.w = Converter._calculate_w(paper_model)
 
         return paper_model
+   
 
     @staticmethod
     def _calculate_w(paper_model : PaperModel):

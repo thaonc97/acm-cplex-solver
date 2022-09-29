@@ -1,6 +1,7 @@
 from acm_cplex_solver.cplex_model.converter import Converter
 import config
-from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSOption, ACSParameter, ACSSolveRequest
+from acm_cplex_solver.generated_protobuf.acm_base_pb2 import CampaignPriority
+from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSOption, ACSParameter, ACSSolveRequest 
 
 #others
 from docplex.mp.model import Model
@@ -25,7 +26,7 @@ class CplexModelSolver:
         self.paper_model.alpha = Converter.calculate_alpha(self.paper_model, self.parameter.alpha_formula)
 
         choosen_method = methods[self.parameter.method]        
-        solve_result= choosen_method(self.paper_model, self.parameter)
+        solve_result= choosen_method()
                             
         return solve_result
     
@@ -57,8 +58,7 @@ class CplexModelSolver:
         t_0 = self.paper_model.t_0
         ratio = self.paper_model.share_rate
         priority = self.paper_model.priority
-        share_type = self.paper_model.share_type
-        campaign_list = self.paper_model.campaign_list
+        share_type = self.paper_model.share_type        
         cl = self.paper_model.cl          
         w = self.paper_model.w       
         alpha = self.paper_model.alpha
@@ -66,6 +66,7 @@ class CplexModelSolver:
               
 
         model = Model("Acm Solver 2 steps- Step 1")
+        campaign_list = np.arange(T)
         t_u_k_set = [(t, u, k) for t in range(T)
                     for u in range(U) for k in range(K)]
         u_k_set = [(u, k) for u in range(U) for k in range(K)]
@@ -76,20 +77,20 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == 'CLASS_B' if G[t] is not None) 
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) 
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == 'CLASS_B' if G[t] is None)
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None)
 
         model.add_constraints(x[t_prime, u, k] == 0
-                            for t in range(t_0) if priority[t] == 'CLASS_C'
+                            for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0
                             for k in L[t] for t_prime in range(t_0) if t_prime != t)
 
         model.add_constraints(x[t_prime, u, k] == 0
-                            for t in range(t_0, T) if priority[t] == 'CLASS_C'
+                            for t in range(t_0, T) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0], D[t][1] + 1) if w[t, u] != 0
                             for k in L[t] for t_prime in range(t_0, T) if t_prime != t)
 
@@ -105,11 +106,11 @@ class CplexModelSolver:
 
         # Chặn dưới
         model.add_constraints(x[t,u,k] >= self.parameter.lower_ratio*alpha[t,u,k]*min(1, r[u,k]*ratio[k]/deno) 
-            for t in range(t_0) if priority[t] == 'CLASS_B'  
+            for t in range(t_0) if priority[t] == CampaignPriority.CLASS_B  
                 for u in range(D[t][0],D[t][1]+1) 
                     for (deno,k) in ( (np.sum(alpha[:,u, k]),k) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0) if deno !=0)
         model.add_constraints(x[t,u,k] >= self.parameter.lower_ratio*alpha[t,u,k]*min(1, r[u,k]*(1-ratio[k])/deno) 
-            for t in range(t_0, T) if priority[t] == 'CLASS_B' 
+            for t in range(t_0, T) if priority[t] == CampaignPriority.CLASS_B 
                 for u in range(D[t][0],D[t][1]+1) 
                     for (deno,k) in ( (np.sum(alpha[:,u, k]),k) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0) if deno !=0)
 
@@ -125,7 +126,7 @@ class CplexModelSolver:
         model.parameters.mip.tolerances.mipgap = self.parameter.gap
         model.time_limit = self.parameter.time_limit
         model.parameters.optimalitytarget = self.parameter.optimality_target
-        if self.self.parameter.export_model == True:
+        if self.parameter.export_model == True:
             logging.info(model.export_as_lp())
         sol = model.solve(log_output = config.enable_log)
         
@@ -156,7 +157,6 @@ class CplexModelSolver:
         ratio = self.paper_model.share_rate
         priority = self.paper_model.priority
         share_type = self.paper_model.share_type
-        campaign_list = self.paper_model.campaign_list
         cl = self.paper_model.cl         
         w = self.paper_model.w       
         alpha = self.paper_model.alpha
@@ -169,6 +169,7 @@ class CplexModelSolver:
         z_star = step_1_docplex_sol.get_value_dict(step_1_z_dict)
 
         model = Model("AcmSolver 2 steps-Step 2")
+        campaign_list = np.arange(T)
         t_u_k_set = [(t, u, k) for t in range(T)
                         for u in range(U) for k in range(K)]
         u_k_set = [(u, k) for u in range(U) for k in range(K)]
@@ -180,28 +181,28 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == 'CLASS_B' if G[t] is not None) 
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) 
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == 'CLASS_B' if G[t] is None)
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None)
 
         model.add_constraints(
             model.sum(x[t, u, k] for t in B[k] if u in range(D[t][0], D[t][1]+1) if w[t, u] != 0) + x_a[u, k] == r[u, k] for u in range(U) for k in range(K)) 
 
         model.add_constraints(x[t_prime, u, k] == 0
-                            for t in range(t_0) if priority[t] == 'CLASS_C'
+                            for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0
                             for k in L[t] for t_prime in range(t_0) if t_prime != t)
 
         model.add_constraints(x[t_prime, u, k] == 0
-                            for t in range(t_0, T) if priority[t] == 'CLASS_C'
+                            for t in range(t_0, T) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0], D[t][1] + 1) if w[t, u] != 0
                             for k in L[t] for t_prime in range(t_0, T) if t_prime != t)
 
         model.add_constraints(x_a[u, k] == 0
-                            for t in range(T) if priority[t] == 'CLASS_C'
+                            for t in range(T) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(U)
                             for k in range(K) if u in range(D[t][0], D[t][1]+1) and w[t, u] != 0 and k in L[t])
 
@@ -216,11 +217,11 @@ class CplexModelSolver:
             
         # Chặn dưới
         model.add_constraints(x[t,u,k] >= self.parameter.lower_ratio*alpha[t,u,k]*min(1, r[u,k]*ratio[k]/deno) 
-            for t in range(t_0) if priority[t] == 'CLASS_B'  
+            for t in range(t_0) if priority[t] == CampaignPriority.CLASS_B  
                 for u in range(D[t][0],D[t][1]+1) 
                     for (deno,k) in ( (np.sum(alpha[:,u, k]),k) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0) if deno !=0)
         model.add_constraints(x[t,u,k] >= self.parameter.lower_ratio*alpha[t,u,k]*min(1, r[u,k]*(1-ratio[k])/deno) 
-            for t in range(t_0, T) if priority[t] == 'CLASS_B' 
+            for t in range(t_0, T) if priority[t] == CampaignPriority.CLASS_B 
                 for u in range(D[t][0],D[t][1]+1) 
                     for (deno,k) in ((np.sum(alpha[:,u, k]),k) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0) if deno !=0)
         
@@ -273,8 +274,7 @@ class CplexModelSolver:
         t_0 = self.paper_model.t_0
         ratio = self.paper_model.share_rate
         priority = self.paper_model.priority
-        share_type = self.paper_model.share_type
-        campaign_list = self.paper_model.campaign_list
+        share_type = self.paper_model.share_type        
         cl = self.paper_model.cl         
         w = self.paper_model.w       
         alpha = self.paper_model.alpha
@@ -286,6 +286,7 @@ class CplexModelSolver:
         p_domain = np.minimum(p_domain,p)
 
         model = Model("awing_model_ver_10.6")
+        campaign_list = np.arange(T)
         t_u_k_set = [(t, u, k) for t in range(T)
                         for u in range(U) for k in range(K)]
         u_k_set = [(u, k) for u in range(U) for k in range(K)]
@@ -302,60 +303,60 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == 'CLASS_B' if G[t] is not None) 
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) 
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == 'CLASS_B' if G[t] is None)
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None)
         
         model.add_constraints(
             model.sum(x[t,u,k] for t in B[k] if u in range(D[t][0],D[t][1]+1) if w[t,u] !=0) + x_a[u,k] == r[u,k] for u in range(U) for k in range(K))  #(2)
         
-        model.add_constraints(y[t] == 1 for t in range(T) if priority[t] == 'CLASS_C')
+        model.add_constraints(y[t] == 1 for t in range(T) if priority[t] == CampaignPriority.CLASS_C)
         model.add_constraints(x_a[u,k] == 0 
-            for t in range(T) if priority[t] == 'CLASS_C' 
+            for t in range(T) if priority[t] == CampaignPriority.CLASS_C 
                 for u in range(U) 
                     for k in range(K) if u in range(D[t][0],D[t][1]+1) and w[t,u] != 0 and k in L[t])
         # Constraint 2 in case  class C
         logging.debug('constraints (2) added!')
         
-        cnst_3 = [model.indicator_constraint(y[t], z[t] >= 0, 0) for t in range(T) if priority[t] == 'CLASS_B']
-        cnst_3_5 = [model.indicator_constraint(y[t], z[t] <= -10**-3, 1) for t in range(T) if priority[t] == 'CLASS_B']
+        cnst_3 = [model.indicator_constraint(y[t], z[t] >= 0, 0) for t in range(T) if priority[t] == CampaignPriority.CLASS_B]
+        cnst_3_5 = [model.indicator_constraint(y[t], z[t] <= -10**-3, 1) for t in range(T) if priority[t] == CampaignPriority.CLASS_B]
         model.add_indicator_constraints(cnst_3) # (3)
         model.add_indicator_constraints(cnst_3_5) # (3.5)
         logging.debug('constraints (3) added!')
         
         model.add_constraints(
             model.sum(x[t1,u,k] for t1 in range(t_0) if t1 in B[k] and u in range(D[t1][0],D[t1][1]+1) and w[t1,u] !=0) 
-            >=ratio[k]*r[u,k]*y[t] for t in range(t_0) if priority[t] =='CLASS_B' for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0  and have_c_network[u,k] == 0 ) #(4)
+            >=ratio[k]*r[u,k]*y[t] for t in range(t_0) if priority[t] ==CampaignPriority.CLASS_B for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0  and have_c_network[u,k] == 0 ) #(4)
         logging.debug('constraints (4) added!')
         
         model.add_constraints(
             model.sum(x[t1,u,k] for t1 in range(t_0,T) if t1 in B[k] and u in range(D[t1][0],D[t1][1]+1) and w[t1,u] !=0) 
-            >=(1-ratio[k])*r[u,k]*y[t] for t in range(t_0,T) if priority[t] =='CLASS_B' for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0 and have_c_domain[u,k] == 0) #(5)
+            >=(1-ratio[k])*r[u,k]*y[t] for t in range(t_0,T) if priority[t] ==CampaignPriority.CLASS_B for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0 and have_c_domain[u,k] == 0) #(5)
         logging.debug('constraints (5) added!')
         model.add_constraints(x[t_prime,u,k] == 0 
-                            for t in range(t_0) if priority[t] == 'CLASS_C'
+                            for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0],D[t][1]+1) if w[t,u] != 0
                             for k in L[t] for t_prime in range(t_0) if t_prime != t)
         
         model.add_constraints(x[t_prime,u,k] == 0 
-                            for t in range(t_0,T) if priority[t] == 'CLASS_C'
+                            for t in range(t_0,T) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0],D[t][1] + 1) if w[t,u] != 0
                             for k in L[t] for t_prime in range(t_0,T) if t_prime != t)
         
         # _________________ Constraint a Phong new
         
-        model.add_constraints(x[t,u,k] >= p_network[u,k]*alpha[t,u,k] for t in range(t_0) if priority[t] =='CLASS_B' for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0  and have_c_network[u,k] == 0)
+        model.add_constraints(x[t,u,k] >= p_network[u,k]*alpha[t,u,k] for t in range(t_0) if priority[t] ==CampaignPriority.CLASS_B for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0  and have_c_network[u,k] == 0)
         
-        model.add_constraints(x[t,u,k] >= p_domain[u,k]*alpha[t,u,k] for t in range(t_0,T) if priority[t] =='CLASS_B' for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0  and have_c_network[u,k] == 0)
+        model.add_constraints(x[t,u,k] >= p_domain[u,k]*alpha[t,u,k] for t in range(t_0,T) if priority[t] ==CampaignPriority.CLASS_B for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0 and CTR[t,k] !=0  and have_c_network[u,k] == 0)
         
         #________________End constraint a Phong new
 
         #_______BEGIN 2 campaign type c case at 1 date place_____
-        model.add_constraints(x[t,u,k] >= r[u,k]*ratio[k] for t in range(t_0) if priority[t] == 'CLASS_C' for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0)
-        model.add_constraints(x[t,u,k] >= r[u,k]*(1-ratio[k]) for t in range(t_0,T) if priority[t] == 'CLASS_C'for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0)
+        model.add_constraints(x[t,u,k] >= r[u,k]*ratio[k] for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0)
+        model.add_constraints(x[t,u,k] >= r[u,k]*(1-ratio[k]) for t in range(t_0,T) if priority[t] == CampaignPriority.CLASS_C for u in range(D[t][0],D[t][1]+1) for k in L[t] if w[t,u] !=0)
         #______END 2 campaign type c case________
         
         # Strich sharing constraint: ràng buộc share cứng, ko cho network tràn sang domain
@@ -386,7 +387,7 @@ class CplexModelSolver:
             max_allocated = self.paper_model.max_allocated']
             model.add_constraint(
                 model.sum((CTR[t,k]*x[t,u,k] 
-                            for t in range(T) if priority[t] == 'CLASS_B' for k in L[t] for u in range(D[t][0],D[t][1]+1) if w[t,u] !=0 )) >= delta * max_allocated)
+                            for t in range(T) if priority[t] == CampaignPriority.CLASS_B for k in L[t] for u in range(D[t][0],D[t][1]+1) if w[t,u] !=0 )) >= delta * max_allocated)
             model.minimize(opt_func_even) """
             
 

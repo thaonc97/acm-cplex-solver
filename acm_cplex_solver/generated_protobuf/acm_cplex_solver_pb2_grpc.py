@@ -5,7 +5,7 @@ import grpc
 import acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 as acm__cplex__solver__pb2
 
 
-class AcmCplexSolverServiceStub(object):
+class AcmCplexSolverStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -15,13 +15,13 @@ class AcmCplexSolverServiceStub(object):
             channel: A grpc.Channel.
         """
         self.Solve = channel.unary_unary(
-                '/AcmCplexSolver.AcmCplexSolverService/Solve',
+                '/AcmCplexSolver.AcmCplexSolver/Solve',
                 request_serializer=acm__cplex__solver__pb2.ACSSolveRequest.SerializeToString,
                 response_deserializer=acm__cplex__solver__pb2.ACSResultList.FromString,
                 )
 
 
-class AcmCplexSolverServiceServicer(object):
+class AcmCplexSolverServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Solve(self, request, context):
@@ -31,7 +31,7 @@ class AcmCplexSolverServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_AcmCplexSolverServiceServicer_to_server(servicer, server):
+def add_AcmCplexSolverServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Solve': grpc.unary_unary_rpc_method_handler(
                     servicer.Solve,
@@ -40,12 +40,12 @@ def add_AcmCplexSolverServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'AcmCplexSolver.AcmCplexSolverService', rpc_method_handlers)
+            'AcmCplexSolver.AcmCplexSolver', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class AcmCplexSolverService(object):
+class AcmCplexSolver(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -59,7 +59,7 @@ class AcmCplexSolverService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/AcmCplexSolver.AcmCplexSolverService/Solve',
+        return grpc.experimental.unary_unary(request, target, '/AcmCplexSolver.AcmCplexSolver/Solve',
             acm__cplex__solver__pb2.ACSSolveRequest.SerializeToString,
             acm__cplex__solver__pb2.ACSResultList.FromString,
             options, channel_credentials,

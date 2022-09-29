@@ -1,1 +1,2 @@
 python -m grpc_tools.protoc -I./acm_cplex_solver/protos --python_out=./acm_cplex_solver/generated_protobuf --grpc_python_out=./acm_cplex_solver/generated_protobuf ./acm_cplex_solver/protos/acm_cplex_solver.proto
+python -m grpc_tools.protoc -I./acm_cplex_solver/protos --python_out=./acm_cplex_solver/generated_protobuf --grpc_python_out=./acm_cplex_solver/generated_protobuf ./acm_cplex_solver/protos/acm_base.proto

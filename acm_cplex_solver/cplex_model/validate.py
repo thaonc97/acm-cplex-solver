@@ -1,33 +1,94 @@
-Validate
+from datetime import date
+import numpy as np
+from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel
+from acm_cplex_solver.generated_protobuf.acm_base_pb2 import CampaignPriority
+from acm_cplex_solver.utils.utils import Utils
 
-function index_continous_check(list: int[], start : int = 0) -> end : int
-Kiểm tra xem 1 list có liên tục không, bắt đầu từ start = 0 default, trả về int là số cuối cùng, -1 nếu ko liên tục
+class Validator:
 
--campaigns
-class_b_c
-total >= 0, nearly equal
-t0-1 = index_continous_check(class_b_c if network) >= 0
-T-1 =  index_continous_check(class_b_c if domain, t0) >= 0
+        
+    @staticmethod
+    def validate_model(acs_model: ACSModel):
+        campaigns_class_b_c = acs_model.campaigns_class_b_c
+        campaigns_class_a = acs_model.campaigns_class_a
+        places = acs_model.places
+
+        # duplicate place id
+        if(Utils.check_duplicate([place.id for place in places])):
+            raise Exception("Có place id trùng nhau")
+
+        # pace id liên tục từ 0
+        is_continuous, K = Utils.check_continous_list([place.id for place in places])
+        if(is_continuous==False):
+            raise Exception("Chỉ số id của place không liên tục và bắt đầu từ 0")
+
+        # duplicate campaign id
+        all_campaigns = [campaign for campaign in campaigns_class_b_c] + [campaign for campaign in campaigns_class_a]
+        if(Utils.check_duplicate([campaign.id for campaign in all_campaigns])):
+            raise Exception("Có campaign id trùng nhau")        
+
+        # total B>=0
+        if min([campaign.total for campaign in campaigns_class_b_c if campaign.priority==CampaignPriority.CLASS_B], default=0)<0:
+            raise Exception("Có campaign cấp B có total < 0")
+
+        # id campaign_b_c từ 0-> t0-1 là network và liên tục
+        is_continuous, t_0 = Utils.check_continous_list([campaign.id for campaign in campaigns_class_b_c if campaign.is_network==True])
+        if(is_continuous==False):
+            raise Exception("Chỉ số id của campaign network cấp B,C không liên tục và bắt đầu từ 0")
+        
+        # id campaign_b_c từ t0-> T-1 là domain và liên tục
+        is_continuous, T = Utils.check_continous_list([campaign.id for campaign in campaigns_class_b_c if campaign.is_network==False], t_0)
+        if(is_continuous==False):
+            raise Exception("Chỉ số id của campaign domain cấp B,C không liên tục và bắt đầu từ t_0")
+
+        # Kiểm tra campaign dates phải có 2 phần tử [fromDate, toDate], fromDate<=toDate
+        D = [campaign.dates for campaign in all_campaigns]
+        for dates in D:
+            if(len(dates)!=2 or dates[0]>dates[1]):
+                raise Exception("Tồn tại campaign có dates không phù hợp.")
+
+        U = np.max(np.array(D)[:,1]) - np.min(np.array(D)[:,0]) +1
+
+        for campaign in all_campaigns:
+            for weight in campaign.weights:
+                if(weight.weight<0):
+                    raise Exception("weight không được nhỏ hơn 0")
+                if(weight.date>U):
+                    raise Exception("weight có date nằm ngoài chỉ số")
+            
+            if(Utils.check_duplicate(campaign.place_ids)):
+                raise Exception("Campaign "+ campaign.id + " có place_ids trùng nhau")
+            if(max(campaign.place_ids)>K or min(campaign.place_ids) < 0):
+                raise Exception("Campaign "+ campaign.id + " có place_id không thuộc khoảng 0->" + (K-1))
+
+        for place in places:
+            if(len([view for view in place.views if view<0])>0):
+                raise Exception("Địa điểm "+ place.id + " có view < 0")
+
+            if(len(place.views) != U):
+                raise Exception("Lượt view của "+ place.id + " không đủ " + U + " ngày")
+            
+            if(place.share_rate <0 or place.share_rate >1):
+                raise Exception("Địa điểm "+ place.id + " có share_rate không thuộc khoảng [0,1]")
+
+            if(len([ctr for ctr in place.ctrs if ctr<0 or ctr>1])>0):
+                raise Exception("Địa điểm "+ place.id + " có ctr không thuộc khoảng [0,1]")
+
+
+        
+
+
+""" Validate
+
 
 class_a 
-index_continous_check(class_a, T) >= T
-
-cả 2 :
-
-weights.weight >= 0, weights[i].date <= U
-dates có 2 phần tử, dates[0]<= dates[1]
-min(dates[0]) = 0, max(dates[1]) = U-1
-max(place_ids[i]) <= K, min(place_ids[i]) >= 0, place_ids ko duplicate id
+index_continous_check(class_a, T) >= T, kiểm tra xem có cần check liên tục ko ?
 
 
 
 
 - places
-+ max(id) = K-1
-views[i]>=0, len(views) = U, đủ views của U ngày
-ctrs[i] thuộc đoạn [0,1], len(ctrs) >= max(campaigns.type)
-share_rate thuộc đoạn [0,1]
+len(ctrs) >= max(campaigns.type), campaign
 
 
-- kết hợp
-, 
+,  """

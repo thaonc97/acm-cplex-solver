@@ -1,37 +1,12 @@
 syntax = "proto3";
 import "google/protobuf/wrappers.proto";
-
+import "acm_base.proto";
 package AcmCplexSolver;
+option csharp_namespace = "AcmMessage.AcmCplexSolver";
 
-service AcmCplexSolverService {
+service AcmCplexSolver {
     rpc Solve(ACSSolveRequest) returns (ACSResultList) {};
 }
-
-enum ShareType {
-    SOFT = 0;
-    NETWORK_HARD = 1; // NETWORK không được lấn sang
-	DOMAIN_HARD = 2; // DOMAIN không được lấn sang 
-	HARD = 3 ; //Cả 2 bên đều không được lấn 
-}
-
-enum CampaignType {   
-    DEFAULT = 0;
-    BANNER_STATIC = 1;
-    BANNER_EFFECT = 2;
-    BANNER_SLIDE = 3;
-    CPA = 4;
-	SURVEY = 5;
-	VIDEO = 6;
-	GAME = 7;
-	TEXT_MATCHING = 8;
-	OTHER = 9;
-}
-enum CampaignPriority {
-	CLASS_A = 0;
-    CLASS_B = 1;
-    CLASS_C = 2;
-}
-
 
 message ACSSolveRequest {
     ACSModel model = 1;
@@ -51,7 +26,6 @@ message ACSPlace {
     repeated float views = 3;
     float share_rate = 4;
     int32 share_type = 5; // enum lấy từ base
-
 }
 
 message ACSWeight {
@@ -74,7 +48,6 @@ message ACSCampaign {
 message ACSParameter {
     int32 time_limit_in_seconds = 1; // thời gian chạy tối đa, tính bằng s
     float evenness_priority = 2; // khoảng 0 - 1, là mức độ ưu tiền đều - tối ưu tài nguyên. Bằng 0 là max tài nguyên, Bằng 1 là max đều
-
 }
 
 message ACSOption {
