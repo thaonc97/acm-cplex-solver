@@ -82,11 +82,11 @@ message ACSOption {
 }
 
 message ACSResult {
-    //google.protobuf.Timestamp date = 1;
-    string type = 2;
-    bool isSystem = 3;
+    int32 campaign_id = 1;
+    int32 date = 2;
+    int32 place_id = 3;
+    float value = 4;
 }
-
 message ACSResultList {
     repeated ACSResult results = 1;
 }
