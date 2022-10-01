@@ -11,11 +11,12 @@ class AcmCplexSolverService(acm_cplex_solver_pb2_grpc.AcmCplexSolver):
     def Solve(self,request,context):
         
         
-        Validator.validate_model(request.acs_model)
+        Validator.validate_model(request.model)
         
-        paper_model = Converter.convert_grpc_message_to_model(request.acs_model)
+        
         parameter = Converter.convert_grpc_parameter_to_parameter(request.parameter)
-        option = Converter.convert_grpc_parameter_to_parameter(request.option)
+        option = Converter.convert_grpc_option_to_option(request.option)
+        paper_model = Converter.convert_grpc_message_to_model(request.model, parameter.alpha_formula)
         solver = CplexModelSolver(paper_model, parameter, option)
 
         result = solver.solve()

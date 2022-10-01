@@ -116,7 +116,7 @@ class AlphaCalculator:
         L = self.paper_model.L
         B = self.paper_model.B       
         t_0 = self.paper_model.t_0
-        ratio = self.paper_model.share_rate
+        ratio = self.paper_model.ratio
         priority = self.paper_model.priority
         share_type = self.paper_model.share_type
         campaign_list = self.paper_model.campaign_list
@@ -193,10 +193,9 @@ class AlphaCalculator:
         L = self.paper_model.L
         B = self.paper_model.B       
         t_0 = self.paper_model.t_0
-        ratio = self.paper_model.share_rate
+        ratio = self.paper_model.ratio
         priority = self.paper_model.priority
-        share_type = self.paper_model.share_type
-        campaign_list = self.paper_model.campaign_list
+        share_type = self.paper_model.share_type     
         cl = self.paper_model.cl          
         w = self.paper_model.w 
 
@@ -236,7 +235,7 @@ class AlphaCalculator:
         L = self.paper_model.L
         B = self.paper_model.B       
         t_0 = self.paper_model.t_0
-        ratio = self.paper_model.share_rate
+        ratio = self.paper_model.ratio
         priority = self.paper_model.priority
         share_type = self.paper_model.share_type        
         cl = self.paper_model.cl          

@@ -1,11 +1,10 @@
-
 from typing import List, Tuple
 
 
 class Utils:
 
     @staticmethod 
-    def check_continous_list(list_a : List[int], start = 0) -> Tuple[bool, int]:
+    def check_continuous_list(list_a : List[int], start = 0) -> Tuple[int, int]:
         """ Hàm kiểm tra xem 1 list số nguyên có phải liên tục hay không 
 
         Args:
@@ -13,23 +12,19 @@ class Utils:
             start (int, optional): giá trị đầu tiên của chuỗi, mặc định bằng 0
 
         Returns:
-            bool: list có liên tục hay không
+            int: list có liên tục hay không, 0 = liên tục, 1 không liên tục, 2 = list rỗng
             int: chỉ số tiếp theo sau chỉ mục cuối cùng
         """
 
-        if(len(list_a)==0 and start==0):
-            return True, 0
-
-        max_a = max(list_a)
         len_a = len(list_a)
+        if(len_a==0):
+            return 2,start
 
-        if(list_a[0]!= start or list_a[len_a-1]!=max_a):
-            return False, -1
+        for i in range(len_a):
+            if(i+start!=list_a[i]):
+                return 1,start
         
-        if(max_a-start+1 != len_a):
-            return False, -1
-        
-        return True, max_a+1
+        return 0, list_a[len_a-1]+1
 
     
     @staticmethod 

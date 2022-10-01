@@ -20,7 +20,7 @@ class Converter:
 
 
     @staticmethod
-    def convert_grpc_message_to_model(acs_model : ACSModel) -> PaperModel:
+    def convert_grpc_message_to_model(acs_model : ACSModel, alpha_formula: string) -> PaperModel:
 
         
         places = acs_model.places
@@ -41,7 +41,8 @@ class Converter:
         r_ku = [place.views for place in places]
         r =np.array(r_ku).T #Transpose r_ku to get r_uk
         
-        t_0 = min([campaign.id for campaign in campaigns_class_b_c if campaign.is_network == False]) # id campaign domain đầu tiên
+        t_0 = max([campaign.id for campaign in campaigns_class_b_c if campaign.is_network == True], default=0)+1 # id campaign domain đầu tiên
+        
         
         G = [campaign.group_id for campaign in campaigns_class_b_c]
         #[g if not (np.isnan(g)) else None for group in groups]
@@ -79,7 +80,6 @@ class Converter:
                 else:
                     w[t,u] = 10
 
-
         # Compute cl
         cl = np.zeros([T, U, K])
         for t in range(T):
@@ -88,33 +88,16 @@ class Converter:
                     for k in L[t]:
                         cl[t, u, k] = 1
 
-        paper_model = PaperModel() 
-        paper_model.U = U
-        paper_model.T = T
-        paper_model.K = K
-        paper_model.D = D
-        paper_model.G = G
-        paper_model.d = d
-        paper_model.r = r
-        paper_model.CTR = CTR
-        paper_model.w = w
-        paper_model.L = L
-        paper_model.B = B
-        paper_model.t_0 = t_0
-        paper_model.priority = priority
-        paper_model.share_type = share_type
-        paper_model.share_rate = share_rate
+        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, B, cl, w) 
+        paper_model.w = Converter._recalculate_w(paper_model)
+        paper_model.alpha = Converter._calculate_alpha(paper_model, alpha_formula)
         
-
-        paper_model.cl = cl
-        # Cập nhật lại trọng số
-        paper_model.w = Converter._calculate_w(paper_model)
 
         return paper_model
    
 
     @staticmethod
-    def _calculate_w(paper_model : PaperModel):
+    def _recalculate_w(paper_model : PaperModel):
         """Cập nhật trọng số cho các campaign:
         Nếu 1 campaign type B bất kì có 1 ngày mà tất cả các địa điểm của nó
         có campaign cấp C chạy, coi như w ngày hôm đó bằng 0.
@@ -170,6 +153,6 @@ class Converter:
 
     
     @staticmethod
-    def calculate_alpha(paper_model : PaperModel, alpha_formula : string):
+    def _calculate_alpha(paper_model : PaperModel, alpha_formula : string):
         alpha_calculator = AlphaCalculator(paper_model)
         return alpha_calculator.calculate(alpha_formula)

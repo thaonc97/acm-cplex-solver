@@ -1,4 +1,7 @@
 from acm_cplex_solver.cplex_model.converter import Converter
+from acm_cplex_solver.cplex_model.paper_model import PaperModel
+from acm_cplex_solver.cplex_model.solver_option import SolverOption
+from acm_cplex_solver.cplex_model.solver_parameter import SolverParameter
 import config
 from acm_cplex_solver.generated_protobuf.acm_base_pb2 import CampaignPriority
 from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSOption, ACSParameter, ACSSolveRequest 
@@ -10,11 +13,13 @@ import numpy as np
 
 
 class CplexModelSolver: 
+    
     EPSILON = 10**-6 
-    def __init__(self, acs_model : ACSModel, acs_parameter : ACSParameter, acs_option : ACSOption):       
-        self.paper_model = Converter.convert_grpc_message_to_model(acs_model)
-        self.parameter = Converter.convert_grpc_parameter_to_parameter(acs_parameter)
-        self.option = acs_option
+
+    def __init__(self, paper_model : PaperModel, parameter : SolverParameter, option : SolverOption):     
+        self.paper_model = paper_model
+        self.parameter = parameter
+        self.option  = option     
 
 
     def solve(self):
@@ -22,8 +27,7 @@ class CplexModelSolver:
             "TWO_STEPS" : self._solve_b_c_2_steps,
             "SOFT_CONSTRAINT": self._solve_b_c_soft
         }
-        # Compute alpha
-        self.paper_model.alpha = Converter.calculate_alpha(self.paper_model, self.parameter.alpha_formula)
+        
 
         choosen_method = methods[self.parameter.method]        
         solve_result= choosen_method()
@@ -51,12 +55,11 @@ class CplexModelSolver:
         D = self.paper_model.D
         G = self.paper_model.G
         CTR = self.paper_model.CTR
-        d = self.paper_model.d
-        w = self.paper_model.w
+        d = self.paper_model.d      
         L = self.paper_model.L
         B = self.paper_model.B       
         t_0 = self.paper_model.t_0
-        ratio = self.paper_model.share_rate
+        ratio = self.paper_model.ratio
         priority = self.paper_model.priority
         share_type = self.paper_model.share_type        
         cl = self.paper_model.cl          
@@ -150,11 +153,10 @@ class CplexModelSolver:
         G = self.paper_model.G
         CTR = self.paper_model.CTR
         d = self.paper_model.d
-        w = self.paper_model.w
         L = self.paper_model.L
         B = self.paper_model.B       
         t_0 = self.paper_model.t_0
-        ratio = self.paper_model.share_rate
+        ratio = self.paper_model.ratio
         priority = self.paper_model.priority
         share_type = self.paper_model.share_type
         cl = self.paper_model.cl         
@@ -268,11 +270,10 @@ class CplexModelSolver:
         G = self.paper_model.G
         CTR = self.paper_model.CTR
         d = self.paper_model.d
-        w = self.paper_model.w
         L = self.paper_model.L
         B = self.paper_model.B       
         t_0 = self.paper_model.t_0
-        ratio = self.paper_model.share_rate
+        ratio = self.paper_model.ratio
         priority = self.paper_model.priority
         share_type = self.paper_model.share_type        
         cl = self.paper_model.cl         
