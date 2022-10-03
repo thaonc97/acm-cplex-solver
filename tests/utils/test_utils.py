@@ -1,4 +1,4 @@
-from acm_cplex_solver.utils.utils import Utils
+from acm_cplex_solver.common.utils import Utils
 
 
 def test_check_continuous_list_empty():
