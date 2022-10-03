@@ -4,7 +4,7 @@ from typing import List
 import numpy as np
 from numpy import array, ndarray
 
-from acm_cplex_solver.generated_protobuf.acm_base_pb2 import CampaignPriority, ShareType
+from generated_protobuf.acm_base_pb2 import CampaignPriority, ShareType
 
 
 @dataclass

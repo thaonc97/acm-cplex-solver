@@ -1,8 +1,8 @@
 
-from acm_cplex_solver.common.converter import Converter
-from acm_cplex_solver.cplex_model.cplex_model_solver import CplexModelSolver
-from acm_cplex_solver.cplex_model.solver_parameter import SolverParameter
-from acm_cplex_solver.cplex_model.validate import Validator
+from common.converter import Converter
+from cplex_model.cplex_model_solver import CplexModelSolver
+from cplex_model.solver_parameter import SolverParameter
+from cplex_model.validate import Validator
 from generated_protobuf import acm_cplex_solver_pb2, acm_cplex_solver_pb2_grpc
 
 class AcmCplexSolverService(acm_cplex_solver_pb2_grpc.AcmCplexSolver):

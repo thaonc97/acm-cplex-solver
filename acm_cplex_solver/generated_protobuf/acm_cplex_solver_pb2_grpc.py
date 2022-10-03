@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 as acm__cplex__solver__pb2
+import generated_protobuf.acm_cplex_solver_pb2 as acm__cplex__solver__pb2
 
 
 class AcmCplexSolverStub(object):

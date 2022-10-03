@@ -4,8 +4,8 @@ import logging
 import grpc
 import time
 import config
-from acm_cplex_solver.services.acm_cplex_solver_service import AcmCplexSolverService
-from acm_cplex_solver.generated_protobuf import acm_cplex_solver_pb2_grpc
+from services.acm_cplex_solver_service import AcmCplexSolverService
+from generated_protobuf import acm_cplex_solver_pb2_grpc
 
 def serve():
     logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, datefmt='%d-%b-%y %H:%M:%S')

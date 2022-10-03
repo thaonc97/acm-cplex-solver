@@ -1,4 +1,4 @@
-from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSParameter, SolveMethod
+from generated_protobuf.acm_cplex_solver_pb2 import ACSParameter, SolveMethod
 
 
 class SolverParameter:

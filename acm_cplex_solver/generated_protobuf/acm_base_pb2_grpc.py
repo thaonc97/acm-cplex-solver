@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import acm_cplex_solver.generated_protobuf.acm_base_pb2 as acm__base__pb2
+import generated_protobuf.acm_base_pb2 as acm__base__pb2
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
 
 

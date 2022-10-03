@@ -1,5 +1,5 @@
-from acm_cplex_solver.cplex_model.paper_model import PaperModel
-from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSOption, ACSParameter, ACSSolveRequest
+from cplex_model.paper_model import PaperModel
+from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSOption, ACSParameter, ACSSolveRequest
 
 import numpy as np
 import string

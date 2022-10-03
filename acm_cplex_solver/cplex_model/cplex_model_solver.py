@@ -1,10 +1,10 @@
-from acm_cplex_solver.common.converter import Converter
-from acm_cplex_solver.cplex_model.paper_model import PaperModel
-from acm_cplex_solver.cplex_model.solver_option import SolverOption
-from acm_cplex_solver.cplex_model.solver_parameter import SolverParameter
-from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import SolveMethod
+from common.converter import Converter
+from cplex_model.paper_model import PaperModel
+from cplex_model.solver_option import SolverOption
+from cplex_model.solver_parameter import SolverParameter
+from generated_protobuf.acm_cplex_solver_pb2 import SolveMethod
 import config
-from acm_cplex_solver.generated_protobuf.acm_base_pb2 import CampaignPriority
+from generated_protobuf.acm_base_pb2 import CampaignPriority
 
 #others
 from docplex.mp.model import Model

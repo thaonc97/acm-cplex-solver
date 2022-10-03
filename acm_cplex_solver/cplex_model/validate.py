@@ -1,8 +1,7 @@
-from datetime import date
 import numpy as np
-from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel
-from acm_cplex_solver.generated_protobuf.acm_base_pb2 import CampaignPriority
-from acm_cplex_solver.common.utils import Utils
+from generated_protobuf.acm_cplex_solver_pb2 import ACSModel
+from generated_protobuf.acm_base_pb2 import CampaignPriority
+from common.utils import Utils
 
 class Validator:
 
