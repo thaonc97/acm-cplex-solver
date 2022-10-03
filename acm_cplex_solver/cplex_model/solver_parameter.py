@@ -1,12 +1,15 @@
+from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSParameter, SolveMethod
+
+
 class SolverParameter:
-    def __init__(self):     
-        self.lower_ratio = 0.1   
-        self.alpha_formula = '3'
-        self.time_limit = 3600
-        self.gap = 0.1        
-        self.export_model = False 
-        self.optimality_target = 0
+    def __init__(self, acs_parameter : ACSParameter):    
+        """ if(acs_parameter.lower_ratio == None):
+            self.lower_ratio = 0.1   
+        else:
+            self.lower_ratio = acs_parameter.lower_ratio   """
+        self.lower_ratio = 0.1 
+        self.alpha_formula = 3        
         self.evenness_priority = 1
-        self.method = "TWO_STEPS"
-        self.delta = 0.9
-        self.feasibility = 10**-4
+        self.method = SolveMethod.SOLVE_TWO_STEPS
+        self.time_limit_in_seconds = 3600
+      

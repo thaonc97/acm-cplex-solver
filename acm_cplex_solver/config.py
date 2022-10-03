@@ -1,20 +1,11 @@
-connection_str = "mongodb://acm:AWing%402020@118.70.206.204:27017/?authSource=admin"  # dev
-# connection_str = "mongodb://192.168.10.202:27017"  # demo
-# connection_str = "mongodb://172.16.2.106:27017"  # staging
-
-# Miscs.
-range_date_int_mapper = 365
-
-# Problem
-days_per_problem = 100
-
-# Solver config
-solve_method = "TWO_STEPS" # choose 'TWO_STEPS' or 'SOFT_CONSTRAINT'
-split_method = 'binary' # choose 'binary' or 'by_places'
-
 # grpc config
-max_grpc_worker = 10
-port = 50051
+grpc_max_worker = 10
+grpc_port = 50051
 
-# log
-enable_log = True
+# CPLEX
+cplex_gap = 0.1
+cplex_optimality_target = 0
+cplex_delta = 0.9
+cplex_feasibility = 10**-4
+cplex_enable_log = True # enable log thư viện cplex
+cplex_export_model = True # log model

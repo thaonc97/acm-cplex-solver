@@ -1,4 +1,3 @@
-from acm_cplex_solver.cplex_model.alpha_calculator import AlphaCalculator
 from acm_cplex_solver.cplex_model.paper_model import PaperModel
 from acm_cplex_solver.cplex_model.solver_parameter import SolverParameter
 from acm_cplex_solver.cplex_model.validate import Validator
@@ -9,10 +8,6 @@ import string
 
 class Converter:
 
-    @staticmethod
-    def convert_grpc_parameter_to_parameter(acs_parameter : ACSParameter) -> SolverParameter:
-        return SolverParameter()
-
     
     @staticmethod
     def convert_grpc_option_to_option(acs_option : ACSOption):
@@ -20,7 +15,7 @@ class Converter:
 
 
     @staticmethod
-    def convert_grpc_message_to_model(acs_model : ACSModel, alpha_formula: string) -> PaperModel:
+    def convert_grpc_message_to_model(acs_model : ACSModel, alpha_formula: int = 3) -> PaperModel:
 
         
         places = acs_model.places
@@ -88,71 +83,7 @@ class Converter:
                     for k in L[t]:
                         cl[t, u, k] = 1
 
-        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, B, cl, w) 
-        paper_model.w = Converter._recalculate_w(paper_model)
-        paper_model.alpha = Converter._calculate_alpha(paper_model, alpha_formula)
-        
+        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, B, cl, w)
 
         return paper_model
    
-
-    @staticmethod
-    def _recalculate_w(paper_model : PaperModel):
-        """Cập nhật trọng số cho các campaign:
-        Nếu 1 campaign type B bất kì có 1 ngày mà tất cả các địa điểm của nó
-        có campaign cấp C chạy, coi như w ngày hôm đó bằng 0.
-
-        Parameters
-        ----------
-        model_ready_data : list
-        have_c_network: np.array()
-            Ma trận tồn tại campaign c: have_c[u,k] = 1 nếu ngày u địa điểm k
-            có campaign type C network chạy
-        have_c_domain : np.array()
-            Tương tự have_c_network nhưng cho domain 
-        """
-        T = paper_model.T
-        t_0 = paper_model.t_0
-        D = paper_model.D
-        L = paper_model.L        
-        priority = paper_model.priority
-
-        w = paper_model.w.copy()
-        # Compute have_c
-        have_c_network = np.zeros([paper_model.U, paper_model.K])
-        have_c_domain = np.zeros([paper_model.U, paper_model.K])
-        for u in range(paper_model.U):
-            for k in range(paper_model.K):
-                have_c_network[u, k] = np.sum(
-                    [paper_model.cl[t, u, k] for t in range(len(paper_model.cl[:, u, k])) if t < paper_model.t_0])
-                have_c_domain[u, k] = np.sum(
-                    [paper_model.cl[t, u, k] for t in range(len(paper_model.cl[:, u, k])) if t >= paper_model.t_0])    
-
-        if 'CLASS_C' not in priority:
-            return w  # Không cần tính toán thay đổi nếu ko có class C
-
-        not_have_c_network = 1- have_c_network # Ma trận không có campaign c
-        not_have_c_domain = 1 - have_c_domain
-
-        for t in range(T):
-            if priority[t] == 'CLASS_B':
-                if t < t_0:
-                    days_filled_by_c= np.sum(not_have_c_network[:,L[t]], axis = 1)
-
-                else:
-                    days_filled_by_c= np.sum(not_have_c_domain[:,L[t]], axis = 1)
-                    
-                for u in range (D[t][0],D[t][1] + 1):
-                    if days_filled_by_c[u] == 0: 
-                        w[t][u] = 0
-                    # Giải thích:  Nếu days_filled_by_c[u] = 0 tức tất cả giá trị của
-                    # not_have_c network (hoặc domain) vào ngày u của các địa điểm
-                    # mà campaign t chạy đều bằng 0 , điều này đồng nghĩa với tất
-                    #  cả các địa điểm vào ngày u đều có campaign cấp C chạy.
-        return w
-
-    
-    @staticmethod
-    def _calculate_alpha(paper_model : PaperModel, alpha_formula : string):
-        alpha_calculator = AlphaCalculator(paper_model)
-        return alpha_calculator.calculate(alpha_formula)
