@@ -1,4 +1,4 @@
-from acm_cplex_solver.cplex_model.converter import Converter
+from acm_cplex_solver.common.converter import Converter
 from acm_cplex_solver.cplex_model.paper_model import PaperModel
 from acm_cplex_solver.cplex_model.solver_option import SolverOption
 from acm_cplex_solver.cplex_model.solver_parameter import SolverParameter

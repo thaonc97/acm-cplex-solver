@@ -1,5 +1,5 @@
 
-from acm_cplex_solver.cplex_model.converter import Converter
+from acm_cplex_solver.common.converter import Converter
 from acm_cplex_solver.cplex_model.cplex_model_solver import CplexModelSolver
 from acm_cplex_solver.cplex_model.solver_parameter import SolverParameter
 from acm_cplex_solver.cplex_model.validate import Validator
