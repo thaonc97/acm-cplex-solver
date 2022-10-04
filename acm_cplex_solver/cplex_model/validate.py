@@ -12,7 +12,7 @@ class Validator:
         campaigns_class_a = acs_model.campaigns_class_a
         places = acs_model.places
 
-        # pace id liên tục từ 0
+        # pace id liên tục từ 0, không cần check dulicate do liên tục là đã đảm bảo ko duplicate
         check_continuous, K = Utils.check_continuous_list([place.id for place in places])
         if(check_continuous!=0):
             raise Exception("Mảng rỗng hoặc chỉ số id của place không liên tục và bắt đầu từ 0")
@@ -44,12 +44,14 @@ class Validator:
         if(check_continuous==1):
             raise Exception("Chỉ số id của campaign domain cấp B,C không liên tục và bắt đầu từ " + str(t_0))
 
-        # id campaign từ T-> là class A và liên tục
-        check_continuous, T_a = Utils.check_continuous_list([campaign.id for campaign in campaigns_class_a], T)
-        if(check_continuous==1):
-            raise Exception("Chỉ số id của campaign cấp A không liên tục và bắt đầu từ " + str(T))
-
         all_campaigns = [campaign for campaign in campaigns_class_b_c] + [campaign for campaign in campaigns_class_a]
+
+        # id tất cả campaign không trùng
+        is_duplicate = Utils.check_duplicate([campaign.id for campaign in all_campaigns])
+        if(is_duplicate==True):
+            raise Exception("Các campaign a,b,c có id trùng nhau.")
+
+        
 
         for campaign in all_campaigns:
             # Kiểm tra campaign dates phải có 2 phần tử [fromDate, toDate], fromDate<=toDate, toDate<U     

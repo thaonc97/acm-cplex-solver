@@ -11,10 +11,7 @@ class AcmCplexSolverService(acm_cplex_solver_pb2_grpc.AcmCplexSolver):
 
     def Solve(self,request,context):
         
-        
-        Validator.validate_model(request.model)
-        
-        
+                
         parameter = SolverParameter(request.parameter)
         paper_model = Converter.convert_grpc_message_to_model(request.model, parameter.alpha_formula)
         solver = CplexModelSolver(paper_model, parameter)

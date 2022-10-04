@@ -239,7 +239,7 @@
     "expected_string": "Chỉ số id của campaign domain cấp B,C không liên tục và bắt đầu từ 2"
   },
   {
-    "name": "Campaign cấp A sai id",
+    "name": "Campaign cấp A,B,C trùng id",
     "model" : {
       "places": [
         {
@@ -307,7 +307,7 @@
       ],
       "campaigns_class_a": [
         {
-          "id": 3,
+          "id": 1,
           "priority": 0,
           "total": 1.1,
           "place_ids": [
@@ -327,7 +327,7 @@
         }
       ]
     },
-    "expected_string": "Chỉ số id của campaign cấp A không liên tục và bắt đầu từ 2"
+    "expected_string": "Các campaign a,b,c có id trùng nhau."
   }
 
 ]

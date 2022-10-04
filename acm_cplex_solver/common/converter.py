@@ -1,3 +1,4 @@
+from acm_cplex_solver.cplex_model.validate import Validator
 from cplex_model.paper_model import PaperModel
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
 
@@ -8,8 +9,10 @@ class Converter:
 
 
     @staticmethod
-    def convert_grpc_message_to_model(acs_model : ACSModel, alpha_formula: int = 3) -> PaperModel:
+    def convert_grpc_message_to_model(acs_model : ACSModel, alpha_formula: int) -> PaperModel:
 
+        
+        Validator.validate_model(acs_model)
         
         places = acs_model.places
         campaigns_class_b_c = acs_model.campaigns_class_b_c 
@@ -17,7 +20,8 @@ class Converter:
 
         share_rate = [place.share_rate for place in places]
         D = [campaign.dates for campaign in campaigns_class_b_c] + [campaign.dates for campaign in campaigns_class_a]
-        U = np.max(np.array(D)[:,1]) - np.min(np.array(D)[:,0]) +1 
+        #U = np.max(np.array(D)[:,1]) - np.min(np.array(D)[:,0]) +1 
+        U = len(places[0].views) # tất cả các place có cùng số ngày views = U
         
         L = [np.array(campaign.place_ids) for campaign in campaigns_class_b_c] 
 
@@ -28,8 +32,9 @@ class Converter:
         priority = [campaign.priority for campaign in campaigns_class_b_c]
         r_ku = [place.views for place in places]
         r =np.array(r_ku).T #Transpose r_ku to get r_uk
-        
-        t_0 = max([campaign.id for campaign in campaigns_class_b_c if campaign.is_network == True], default=0)+1 # id campaign domain đầu tiên
+                
+        t_0 = min([campaign.id for campaign in campaigns_class_b_c if campaign.is_network == False], default=T) 
+        # id campaign domain đầu tiên, nếu campaign domain rỗng thì = T
         
         
         G = [campaign.group_id for campaign in campaigns_class_b_c]
@@ -76,7 +81,7 @@ class Converter:
                     for k in L[t]:
                         cl[t, u, k] = 1
 
-        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, B, cl, w)
+        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, B, cl, w, alpha_formula)
 
         return paper_model
    
