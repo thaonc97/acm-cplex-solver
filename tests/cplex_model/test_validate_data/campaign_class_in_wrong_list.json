@@ -44,50 +44,12 @@
           ],
           "type": 0,
           "is_network": true
-        },
-        {
-          "id": 1,
-          "priority": 0,
-          "total": 1.1,
-          "place_ids": [
-            0
-          ],
-          "dates": [
-            0,1
-          ],
-          "weights": [
-            {
-              "date": 1,
-              "weight": 10
-            }
-          ],
-          "type": 1,
-          "is_network": false
         }
       ],
       "campaigns_class_a": [
-        {
-          "id": 1,
-          "priority": 0,
-          "total": 1.1,
-          "place_ids": [
-            1
-          ],
-          "dates": [
-            0,1
-          ],
-          "weights": [
-            {
-              "date": 1,
-              "weight": 10
-            }
-          ],
-          "type": 0,
-          "is_network": true
-        }
       ]
     },
-    "expected_string": "Có campaign id trùng nhau"
+    "expected_string": "Có campaign cấp A trong campaigns_class_b_c"
   },
   {
     "model" : {
@@ -118,7 +80,7 @@
       "campaigns_class_b_c": [
         {
           "id": 0,
-          "priority": 0,
+          "priority": 1,
           "total": 1.1,
           "place_ids": [
             1
@@ -134,31 +96,12 @@
           ],
           "type": 0,
           "is_network": true
-        },
-        {
-          "id": 0,
-          "priority": 0,
-          "total": 1.1,
-          "place_ids": [
-            0
-          ],
-          "dates": [
-            0,1
-          ],
-          "weights": [
-            {
-              "date": 1,
-              "weight": 10
-            }
-          ],
-          "type": 1,
-          "is_network": false
         }
       ],
       "campaigns_class_a": [
         {
           "id": 1,
-          "priority": 0,
+          "priority": 2,
           "total": 1.1,
           "place_ids": [
             1
@@ -177,7 +120,7 @@
         }
       ]
     },
-    "expected_string": "Có campaign id trùng nhau"
+    "expected_string": "Có campaign khác cấp A trong campaigns_class_a"
   }
 
 ]

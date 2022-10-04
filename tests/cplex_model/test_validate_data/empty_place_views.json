@@ -1,0 +1,23 @@
+[
+  {
+    "model" : {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        }
+      ],
+      "campaigns_class_b_c": [
+      ],
+      "campaigns_class_a": [
+      ]
+    },
+    "expected_string": "Địa điểm 0 không có thông tin lượt views"
+  }
+]

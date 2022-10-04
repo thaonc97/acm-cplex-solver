@@ -1,6 +1,46 @@
 [
   {
     "model": {
+      "places": [      
+      ],
+      "campaigns_class_b_c": [],
+      "campaigns_class_a": []
+    },
+    "expected_string": "Mảng rỗng hoặc chỉ số id của place không liên tục và bắt đầu từ 0"
+  },
+  {
+    "model": {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        },
+        {
+          "id": 0,
+          "ctrs": [
+            0.5,0.6
+          ],
+          "views": [
+            200,200
+          ],
+          "share_rate": 1,
+          "share_type": 0
+        }
+      ],
+      "campaigns_class_b_c": [],
+      "campaigns_class_a": []
+    },
+    "expected_string": "Mảng rỗng hoặc chỉ số id của place không liên tục và bắt đầu từ 0"
+  },
+  {
+    "model": {
       "places": [
         {
           "id": 0,

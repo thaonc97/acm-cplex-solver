@@ -1,0 +1,333 @@
+[
+  {
+    "name": "Campaign network sai id",
+    "model" : {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        },
+        {
+          "id": 1,
+          "ctrs": [
+            0.5,0.6
+          ],
+          "views": [
+            200,200
+          ],
+          "share_rate": 1,
+          "share_type": 0
+        }
+      ],
+      "campaigns_class_b_c": [
+        {
+          "id": 0,
+          "priority": 1,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 0,
+              "weight": 20
+            }
+          ],
+          "type": 0,
+          "is_network": true
+        },
+        {
+          "id": 0,
+          "priority": 2,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 0,
+              "weight": 20
+            }
+          ],
+          "type": 0,
+          "is_network": true
+        },
+        {
+          "id": 1,
+          "priority": 1,
+          "total": 1.1,
+          "place_ids": [
+            0
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 1,
+          "is_network": false
+        }
+      ],
+      "campaigns_class_a": [
+        {
+          "id": 1,
+          "priority": 0,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 0,
+          "is_network": true
+        }
+      ]
+    },
+    "expected_string": "Chỉ số id của campaign network cấp B,C không liên tục và bắt đầu từ 0"
+  },
+  {
+    "name": "Campaign domain sai id",
+    "model" : {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        },
+        {
+          "id": 1,
+          "ctrs": [
+            0.5,0.6
+          ],
+          "views": [
+            200,200
+          ],
+          "share_rate": 1,
+          "share_type": 0
+        }
+      ],
+      "campaigns_class_b_c": [
+        {
+          "id": 0,
+          "priority": 1,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 0,
+              "weight": 20
+            }
+          ],
+          "type": 0,
+          "is_network": true
+        },
+        {
+          "id": 1,
+          "priority": 2,
+          "total": 1.1,
+          "place_ids": [
+            0
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 1,
+          "is_network": true
+        },
+        {
+          "id": 2,
+          "priority": 2,
+          "total": 1.1,
+          "place_ids": [
+            0
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 1,
+          "is_network": false
+        },
+        {
+          "id": 4,
+          "priority": 1,
+          "total": 1.1,
+          "place_ids": [
+            0
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 1,
+          "is_network": false
+        }
+      ],
+      "campaigns_class_a": [
+        {
+          "id": 1,
+          "priority": 0,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 0,
+          "is_network": true
+        }
+      ]
+    },
+    "expected_string": "Chỉ số id của campaign domain cấp B,C không liên tục và bắt đầu từ 2"
+  },
+  {
+    "name": "Campaign cấp A sai id",
+    "model" : {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        },
+        {
+          "id": 1,
+          "ctrs": [
+            0.5,0.6
+          ],
+          "views": [
+            200,200
+          ],
+          "share_rate": 1,
+          "share_type": 0
+        }
+      ],
+      "campaigns_class_b_c": [
+        {
+          "id": 0,
+          "priority": 1,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 0,
+              "weight": 20
+            }
+          ],
+          "type": 0,
+          "is_network": true
+        },
+        {
+          "id": 1,
+          "priority": 2,
+          "total": 1.1,
+          "place_ids": [
+            0
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 1,
+          "is_network": false
+        }
+      ],
+      "campaigns_class_a": [
+        {
+          "id": 3,
+          "priority": 0,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 0,
+          "is_network": true
+        }
+      ]
+    },
+    "expected_string": "Chỉ số id của campaign cấp A không liên tục và bắt đầu từ 2"
+  }
+
+]
