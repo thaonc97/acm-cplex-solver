@@ -1,15 +1,10 @@
 from cplex_model.paper_model import PaperModel
-from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSOption, ACSParameter, ACSSolveRequest
+from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
 
 import numpy as np
 import string
 
 class Converter:
-
-    
-    @staticmethod
-    def convert_grpc_option_to_option(acs_option : ACSOption):
-        pass # TODO
 
 
     @staticmethod

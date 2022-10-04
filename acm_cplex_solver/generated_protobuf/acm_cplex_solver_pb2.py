@@ -22,7 +22,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\252\002\031AcmMessage.AcmCplexSolver',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16\x61\x63m_cplex_solver.proto\x12\x0e\x41\x63mCplexSolver\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x0e\x61\x63m_base.proto\"k\n\x0f\x41\x43SSolveRequest\x12\'\n\x05model\x18\x01 \x01(\x0b\x32\x18.AcmCplexSolver.ACSModel\x12/\n\tparameter\x18\x02 \x01(\x0b\x32\x1c.AcmCplexSolver.ACSParameter\"\xa6\x01\n\x08\x41\x43SModel\x12(\n\x06places\x18\x01 \x03(\x0b\x32\x18.AcmCplexSolver.ACSPlace\x12\x38\n\x13\x63\x61mpaigns_class_b_c\x18\x02 \x03(\x0b\x32\x1b.AcmCplexSolver.ACSCampaign\x12\x36\n\x11\x63\x61mpaigns_class_a\x18\x03 \x03(\x0b\x32\x1b.AcmCplexSolver.ACSCampaign\"[\n\x08\x41\x43SPlace\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63trs\x18\x02 \x03(\x02\x12\r\n\x05views\x18\x03 \x03(\x02\x12\x12\n\nshare_rate\x18\x04 \x01(\x02\x12\x12\n\nshare_type\x18\x05 \x01(\x05\")\n\tACSWeight\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\x05\x12\x0e\n\x06weight\x18\x02 \x01(\x05\"\xfb\x01\n\x0b\x41\x43SCampaign\x12\n\n\x02id\x18\x01 \x01(\x05\x12#\n\x08priority\x18\x02 \x01(\x0e\x32\x11.CampaignPriority\x12\r\n\x05total\x18\x03 \x01(\x02\x12\x11\n\tplace_ids\x18\x04 \x03(\x05\x12\r\n\x05\x64\x61tes\x18\x05 \x03(\x05\x12*\n\x07weights\x18\x07 \x03(\x0b\x32\x19.AcmCplexSolver.ACSWeight\x12\x1b\n\x04type\x18\x08 \x01(\x0e\x32\r.CampaignType\x12\x12\n\nis_network\x18\t \x01(\x08\x12-\n\x08group_id\x18\n \x01(\x0b\x32\x1b.google.protobuf.Int64Value\"\xeb\x02\n\x0c\x41\x43SParameter\x12\x30\n\x0blower_ratio\x18\x01 \x01(\x0b\x32\x1b.google.protobuf.FloatValue\x12\x32\n\ralpha_formula\x18\x02 \x01(\x0b\x32\x1b.google.protobuf.Int32Value\x12\x36\n\x11\x65venness_priority\x18\x03 \x01(\x0b\x32\x1b.google.protobuf.FloatValue\x12\x34\n\x0csolve_method\x18\x04 \x01(\x0e\x32\x1e.AcmCplexSolver.ACSSolveMethod\x12:\n\x15time_limit_in_seconds\x18\x05 \x01(\x0b\x32\x1b.google.protobuf.Int32Value\x12K\n\x16include_class_a_option\x18\x06 \x01(\x0e\x32+.AcmCplexSolver.ACSSolveIncludeClassAOption\"6\n\tACSOption\x12)\n!include_a_class_if_b_and_c_enough\x18\x01 \x01(\x08\"O\n\tACSResult\x12\x13\n\x0b\x63\x61mpaign_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\x05\x12\x10\n\x08place_id\x18\x03 \x01(\x05\x12\r\n\x05value\x18\x04 \x01(\x02\";\n\rACSResultList\x12*\n\x07results\x18\x01 \x03(\x0b\x32\x19.AcmCplexSolver.ACSResult*@\n\x0e\x41\x43SSolveMethod\x12\x13\n\x0fSOLVE_TWO_STEPS\x10\x00\x12\x19\n\x15SOLVE_SOFT_CONSTRAINT\x10\x01*]\n\x1b\x41\x43SSolveIncludeClassAOption\x12\x12\n\x0eINCLUDE_ALWAYS\x10\x00\x12\x19\n\x15INCLUDE_IF_B_C_ENOUGH\x10\x01\x12\x0f\n\x0bNOT_INCLUDE\x10\x02\x32[\n\x0e\x41\x63mCplexSolver\x12I\n\x05Solve\x12\x1f.AcmCplexSolver.ACSSolveRequest\x1a\x1d.AcmCplexSolver.ACSResultList\"\x00\x42\x1c\xaa\x02\x19\x41\x63mMessage.AcmCplexSolverb\x06proto3'
+  serialized_pb=b'\n\x16\x61\x63m_cplex_solver.proto\x12\x0e\x41\x63mCplexSolver\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x0e\x61\x63m_base.proto\"k\n\x0f\x41\x43SSolveRequest\x12\'\n\x05model\x18\x01 \x01(\x0b\x32\x18.AcmCplexSolver.ACSModel\x12/\n\tparameter\x18\x02 \x01(\x0b\x32\x1c.AcmCplexSolver.ACSParameter\"\xa6\x01\n\x08\x41\x43SModel\x12(\n\x06places\x18\x01 \x03(\x0b\x32\x18.AcmCplexSolver.ACSPlace\x12\x38\n\x13\x63\x61mpaigns_class_b_c\x18\x02 \x03(\x0b\x32\x1b.AcmCplexSolver.ACSCampaign\x12\x36\n\x11\x63\x61mpaigns_class_a\x18\x03 \x03(\x0b\x32\x1b.AcmCplexSolver.ACSCampaign\"[\n\x08\x41\x43SPlace\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63trs\x18\x02 \x03(\x02\x12\r\n\x05views\x18\x03 \x03(\x02\x12\x12\n\nshare_rate\x18\x04 \x01(\x02\x12\x12\n\nshare_type\x18\x05 \x01(\x05\")\n\tACSWeight\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\x05\x12\x0e\n\x06weight\x18\x02 \x01(\x05\"\xfb\x01\n\x0b\x41\x43SCampaign\x12\n\n\x02id\x18\x01 \x01(\x05\x12#\n\x08priority\x18\x02 \x01(\x0e\x32\x11.CampaignPriority\x12\r\n\x05total\x18\x03 \x01(\x02\x12\x11\n\tplace_ids\x18\x04 \x03(\x05\x12\r\n\x05\x64\x61tes\x18\x05 \x03(\x05\x12*\n\x07weights\x18\x07 \x03(\x0b\x32\x19.AcmCplexSolver.ACSWeight\x12\x1b\n\x04type\x18\x08 \x01(\x0e\x32\r.CampaignType\x12\x12\n\nis_network\x18\t \x01(\x08\x12-\n\x08group_id\x18\n \x01(\x0b\x32\x1b.google.protobuf.Int64Value\"\xf7\x01\n\x0c\x41\x43SParameter\x12\x13\n\x0blower_ratio\x18\x01 \x01(\x02\x12\x15\n\ralpha_formula\x18\x02 \x01(\x05\x12\x19\n\x11\x65venness_priority\x18\x03 \x01(\x02\x12\x34\n\x0csolve_method\x18\x04 \x01(\x0e\x32\x1e.AcmCplexSolver.ACSSolveMethod\x12\x1d\n\x15time_limit_in_seconds\x18\x05 \x01(\x05\x12K\n\x16include_class_a_option\x18\x06 \x01(\x0e\x32+.AcmCplexSolver.ACSSolveIncludeClassAOption\"O\n\tACSResult\x12\x13\n\x0b\x63\x61mpaign_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\x05\x12\x10\n\x08place_id\x18\x03 \x01(\x05\x12\r\n\x05value\x18\x04 \x01(\x02\";\n\rACSResultList\x12*\n\x07results\x18\x01 \x03(\x0b\x32\x19.AcmCplexSolver.ACSResult*@\n\x0e\x41\x43SSolveMethod\x12\x13\n\x0fSOLVE_TWO_STEPS\x10\x00\x12\x19\n\x15SOLVE_SOFT_CONSTRAINT\x10\x01*]\n\x1b\x41\x43SSolveIncludeClassAOption\x12\x12\n\x0eINCLUDE_ALWAYS\x10\x00\x12\x19\n\x15INCLUDE_IF_B_C_ENOUGH\x10\x01\x12\x0f\n\x0bNOT_INCLUDE\x10\x02\x32[\n\x0e\x41\x63mCplexSolver\x12I\n\x05Solve\x12\x1f.AcmCplexSolver.ACSSolveRequest\x1a\x1d.AcmCplexSolver.ACSResultList\"\x00\x42\x1c\xaa\x02\x19\x41\x63mMessage.AcmCplexSolverb\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_wrappers__pb2.DESCRIPTOR,acm__base__pb2.DESCRIPTOR,])
 
@@ -46,8 +46,8 @@ _ACSSOLVEMETHOD = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1322,
-  serialized_end=1386,
+  serialized_start=1150,
+  serialized_end=1214,
 )
 _sym_db.RegisterEnumDescriptor(_ACSSOLVEMETHOD)
 
@@ -77,8 +77,8 @@ _ACSSOLVEINCLUDECLASSAOPTION = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1388,
-  serialized_end=1481,
+  serialized_start=1216,
+  serialized_end=1309,
 )
 _sym_db.RegisterEnumDescriptor(_ACSSOLVEINCLUDECLASSAOPTION)
 
@@ -373,22 +373,22 @@ _ACSPARAMETER = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='lower_ratio', full_name='AcmCplexSolver.ACSParameter.lower_ratio', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='alpha_formula', full_name='AcmCplexSolver.ACSParameter.alpha_formula', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='evenness_priority', full_name='AcmCplexSolver.ACSParameter.evenness_priority', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -401,8 +401,8 @@ _ACSPARAMETER = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='time_limit_in_seconds', full_name='AcmCplexSolver.ACSParameter.time_limit_in_seconds', index=4,
-      number=5, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=5, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -426,39 +426,7 @@ _ACSPARAMETER = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=759,
-  serialized_end=1122,
-)
-
-
-_ACSOPTION = _descriptor.Descriptor(
-  name='ACSOption',
-  full_name='AcmCplexSolver.ACSOption',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='include_a_class_if_b_and_c_enough', full_name='AcmCplexSolver.ACSOption.include_a_class_if_b_and_c_enough', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1124,
-  serialized_end=1178,
+  serialized_end=1006,
 )
 
 
@@ -510,8 +478,8 @@ _ACSRESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1180,
-  serialized_end=1259,
+  serialized_start=1008,
+  serialized_end=1087,
 )
 
 
@@ -542,8 +510,8 @@ _ACSRESULTLIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1261,
-  serialized_end=1320,
+  serialized_start=1089,
+  serialized_end=1148,
 )
 
 _ACSSOLVEREQUEST.fields_by_name['model'].message_type = _ACSMODEL
@@ -555,11 +523,7 @@ _ACSCAMPAIGN.fields_by_name['priority'].enum_type = acm__base__pb2._CAMPAIGNPRIO
 _ACSCAMPAIGN.fields_by_name['weights'].message_type = _ACSWEIGHT
 _ACSCAMPAIGN.fields_by_name['type'].enum_type = acm__base__pb2._CAMPAIGNTYPE
 _ACSCAMPAIGN.fields_by_name['group_id'].message_type = google_dot_protobuf_dot_wrappers__pb2._INT64VALUE
-_ACSPARAMETER.fields_by_name['lower_ratio'].message_type = google_dot_protobuf_dot_wrappers__pb2._FLOATVALUE
-_ACSPARAMETER.fields_by_name['alpha_formula'].message_type = google_dot_protobuf_dot_wrappers__pb2._INT32VALUE
-_ACSPARAMETER.fields_by_name['evenness_priority'].message_type = google_dot_protobuf_dot_wrappers__pb2._FLOATVALUE
 _ACSPARAMETER.fields_by_name['solve_method'].enum_type = _ACSSOLVEMETHOD
-_ACSPARAMETER.fields_by_name['time_limit_in_seconds'].message_type = google_dot_protobuf_dot_wrappers__pb2._INT32VALUE
 _ACSPARAMETER.fields_by_name['include_class_a_option'].enum_type = _ACSSOLVEINCLUDECLASSAOPTION
 _ACSRESULTLIST.fields_by_name['results'].message_type = _ACSRESULT
 DESCRIPTOR.message_types_by_name['ACSSolveRequest'] = _ACSSOLVEREQUEST
@@ -568,7 +532,6 @@ DESCRIPTOR.message_types_by_name['ACSPlace'] = _ACSPLACE
 DESCRIPTOR.message_types_by_name['ACSWeight'] = _ACSWEIGHT
 DESCRIPTOR.message_types_by_name['ACSCampaign'] = _ACSCAMPAIGN
 DESCRIPTOR.message_types_by_name['ACSParameter'] = _ACSPARAMETER
-DESCRIPTOR.message_types_by_name['ACSOption'] = _ACSOPTION
 DESCRIPTOR.message_types_by_name['ACSResult'] = _ACSRESULT
 DESCRIPTOR.message_types_by_name['ACSResultList'] = _ACSRESULTLIST
 DESCRIPTOR.enum_types_by_name['ACSSolveMethod'] = _ACSSOLVEMETHOD
@@ -617,13 +580,6 @@ ACSParameter = _reflection.GeneratedProtocolMessageType('ACSParameter', (_messag
   })
 _sym_db.RegisterMessage(ACSParameter)
 
-ACSOption = _reflection.GeneratedProtocolMessageType('ACSOption', (_message.Message,), {
-  'DESCRIPTOR' : _ACSOPTION,
-  '__module__' : 'acm_cplex_solver_pb2'
-  # @@protoc_insertion_point(class_scope:AcmCplexSolver.ACSOption)
-  })
-_sym_db.RegisterMessage(ACSOption)
-
 ACSResult = _reflection.GeneratedProtocolMessageType('ACSResult', (_message.Message,), {
   'DESCRIPTOR' : _ACSRESULT,
   '__module__' : 'acm_cplex_solver_pb2'
@@ -648,8 +604,8 @@ _ACMCPLEXSOLVER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1483,
-  serialized_end=1574,
+  serialized_start=1311,
+  serialized_end=1402,
   methods=[
   _descriptor.MethodDescriptor(
     name='Solve',
