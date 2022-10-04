@@ -16,9 +16,8 @@ class AcmCplexSolverService(acm_cplex_solver_pb2_grpc.AcmCplexSolver):
         
         
         parameter = SolverParameter(request.parameter)
-        option = Converter.convert_grpc_option_to_option(request.option)
         paper_model = Converter.convert_grpc_message_to_model(request.model, parameter.alpha_formula)
-        solver = CplexModelSolver(paper_model, parameter, option)
+        solver = CplexModelSolver(paper_model, parameter)
 
         result = solver.solve()
         

@@ -1,8 +1,7 @@
 from common.converter import Converter
 from cplex_model.paper_model import PaperModel
-from cplex_model.solver_option import SolverOption
 from cplex_model.solver_parameter import SolverParameter
-from generated_protobuf.acm_cplex_solver_pb2 import SolveMethod
+from generated_protobuf.acm_cplex_solver_pb2 import ACSSolveMethod
 import config
 from generated_protobuf.acm_base_pb2 import CampaignPriority
 
@@ -17,16 +16,15 @@ class CplexModelSolver:
     
     EPSILON = 10**-6 
 
-    def __init__(self, paper_model : PaperModel, parameter : SolverParameter, option : SolverOption):     
+    def __init__(self, paper_model : PaperModel, parameter : SolverParameter):     
         self.paper_model = paper_model
         self.parameter = parameter
-        self.option  = option     
 
 
     def solve(self):
         methods = {
-            SolveMethod.SOLVE_TWO_STEPS : self._solve_b_c_2_steps,
-            SolveMethod.SOLVE_SOFT_CONSTRAINT: self._solve_b_c_soft
+            ACSSolveMethod.SOLVE_TWO_STEPS : self._solve_b_c_2_steps,
+            ACSSolveMethod.SOLVE_SOFT_CONSTRAINT: self._solve_b_c_soft
         }
         
 
