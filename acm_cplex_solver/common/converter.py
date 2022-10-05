@@ -3,6 +3,7 @@ from cplex_model.paper_model import PaperModel
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
 
 import numpy as np
+from google.protobuf.json_format import MessageToDict
 import string
 
 class Converter:
@@ -84,4 +85,8 @@ class Converter:
         paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, B, cl, w, alpha_formula)
 
         return paper_model
-   
+
+    @staticmethod
+    def convert_grpc_message_to_list(acs_model : ACSModel, class_a_only = True):
+        a_resource = MessageToDict(acs_model.campaigns_class_a)
+        return a_resource

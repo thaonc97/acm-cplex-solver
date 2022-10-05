@@ -75,11 +75,11 @@ class CplexModelSolver:
         x = model.continuous_var_dict(t_u_k_set, lb=0, name='x')
         z = model.continuous_var_dict(campaign_list, lb=-99999999, ub=0, name='z')
 
-        model.add_constraints(
+        model.add_constraints( 
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) 
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
