@@ -17,7 +17,7 @@ class AcmCplexSolverStub(object):
         self.Solve = channel.unary_unary(
                 '/AcmCplexSolver.AcmCplexSolver/Solve',
                 request_serializer=acm__cplex__solver__pb2.ACSSolveRequest.SerializeToString,
-                response_deserializer=acm__cplex__solver__pb2.ACSResultList.FromString,
+                response_deserializer=acm__cplex__solver__pb2.ACSResult.FromString,
                 )
 
 
@@ -36,7 +36,7 @@ def add_AcmCplexSolverServicer_to_server(servicer, server):
             'Solve': grpc.unary_unary_rpc_method_handler(
                     servicer.Solve,
                     request_deserializer=acm__cplex__solver__pb2.ACSSolveRequest.FromString,
-                    response_serializer=acm__cplex__solver__pb2.ACSResultList.SerializeToString,
+                    response_serializer=acm__cplex__solver__pb2.ACSResult.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -61,6 +61,6 @@ class AcmCplexSolver(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/AcmCplexSolver.AcmCplexSolver/Solve',
             acm__cplex__solver__pb2.ACSSolveRequest.SerializeToString,
-            acm__cplex__solver__pb2.ACSResultList.FromString,
+            acm__cplex__solver__pb2.ACSResult.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -1,6 +1,6 @@
 from copy import deepcopy
 from typing import List, Tuple
-from acm_cplex_solver.cplex_model.class_a_model import ClassAModel
+from acm_cplex_solver.cplex_model.class_a_model_solver import ClassAModelSolver
 from acm_cplex_solver.cplex_model.validate import Validator
 from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSCampaign
 from cplex_model.paper_model import PaperModel
@@ -91,7 +91,7 @@ class Converter:
     
     @staticmethod
     def convert_solve_details_to_class_a_model(
-        solve_details, paper_model : PaperModel, campaigns_class_a : List[ACSCampaign]) -> ClassAModel: 
+        solve_details, paper_model : PaperModel, campaigns_class_a : List[ACSCampaign]) -> ClassAModelSolver: 
         
         t_0 = paper_model.t_0
         U = paper_model.U
@@ -113,7 +113,7 @@ class Converter:
         total_domains = df_b_c_domain_grouped["value"].to_numpy().reshape([U,K])
 
         campaigns_class_a_network, campaigns_class_a_domain = Converter._get_running_a(U, K, campaigns_class_a)
-        a_model = ClassAModel(paper_model.r, paper_model.ratio, total_networks, total_domains, campaigns_class_a_network, campaigns_class_a_domain)
+        a_model = ClassAModelSolver(paper_model.r, paper_model.ratio, total_networks, total_domains, campaigns_class_a_network, campaigns_class_a_domain)
         
 
         return a_model
