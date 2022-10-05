@@ -1,6 +1,5 @@
 from dataclasses import astuple, dataclass, field
 
-from toml import TomlArraySeparatorEncoder
 
 @dataclass
 class ClassAModel:

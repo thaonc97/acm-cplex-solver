@@ -1,5 +1,7 @@
+from array import array
+import string
 from typing import List, Tuple
-
+import numpy as np
 
 class Utils:
 
@@ -37,3 +39,41 @@ class Utils:
                 seen.add(x)
         
         return len(list_a)!=len(seen)
+
+    
+    @staticmethod 
+    def compare(value_a, value_b) -> bool:
+        """ So sánh 2 dict, hoặc 2 giá trị float, string, int
+
+        Args:
+            value_a (_type_): int, float, string, dict
+            value_b (_type_): int, float, string, dict
+
+        Returns:
+            bool: True, Flase
+        """
+        if(type(value_a) != type(value_b)):
+            return False
+        
+        if(type(value_a) == str):
+            return value_a == value_b
+        elif(type(value_a) == int):
+            return value_a==value_b
+        elif(type(value_a)==float):
+            return np.isclose(value_a, value_b)
+        elif(type(value_a)==list):
+            if(len(value_a) == 0 and len(value_b) == 0):
+                return True     
+            try:
+                return (not np.any(np.isclose(value_a, value_b) == False))
+            except:       
+                return False            
+        elif(type(value_a)==dict):
+            if(value_a.keys()!=value_b.keys()):
+                return False
+            for key in value_a.keys():
+                if(not Utils.compare(value_a[key], value_b[key])):
+                    return False
+            return True
+        else:
+            raise Exception("Compare is not support this type !")
