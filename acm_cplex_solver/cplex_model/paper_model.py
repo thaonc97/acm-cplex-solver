@@ -1,12 +1,12 @@
-from dataclasses import astuple, dataclass, field
-import string
+from dataclasses import dataclass, field
 from typing import List
+from dataclasses_json import dataclass_json
 import numpy as np
 from numpy import array, ndarray
 
-from generated_protobuf.acm_base_pb2 import CampaignPriority, ShareType
+from generated_protobuf.acm_base_pb2 import CampaignPriority
 
-
+@dataclass_json
 @dataclass
 class PaperModel:
     """_summary_
@@ -357,9 +357,7 @@ class PaperModel:
                 for k in L[t] :
                     if have_c_network[u,k] == 0:
                         deno = np.sum([r[u,k_bar] for k_bar in L[t] if have_c_network[u,k_bar] == 0])
-                        if deno ==0:
-                            alpha[t,u,k] == 0
-                        else: 
+                        if deno !=0:
                             alpha[t,u,k] = d_tu[t][u]*r[u,k]/deno
                             
         for t in range(t_0, T):
@@ -367,9 +365,7 @@ class PaperModel:
                 for k in L[t] :
                     if have_c_domain[u,k] == 0:
                         deno = np.sum([r[u,k_bar] for k_bar in L[t] if have_c_domain[u,k_bar] == 0])
-                        if deno ==0:
-                            alpha[t,u,k] == 0
-                        else: 
+                        if deno !=0:
                             alpha[t,u,k] = d_tu[t][u]*r[u,k]/deno
 
         return alpha

@@ -1,11 +1,11 @@
-# grpc config
-grpc_max_worker = 10
-grpc_port = 50051
+# GRPC config
+GRPC_MAX_WORKER = 10
+GRPC_PORT = 50051
 
 # CPLEX
-cplex_gap = 0.1
-cplex_optimality_target = 0
-cplex_delta = 0.9
-cplex_feasibility = 10**-4
-cplex_enable_log = True # enable log thư viện cplex
-cplex_export_model = True # log model
+CPLEX_GAP = 0.1
+CPLEX_OPTIMALITY_TARGET = 0
+CPLEX_DELTA = 0.9
+CPLEX_FEASIBILITY = 10**-4
+CPLEX_ENABLE_LOG = True # ENABLE LOG THƯ VIỆN CPLEX
+CPLEX_EXPORT_MODEL = True # LOG MODEL

@@ -127,10 +127,10 @@ class CplexModelSolver:
         model.parameters.simplex.tolerances.feasibility = config.cplex_feasibility
         model.parameters.mip.tolerances.mipgap = config.cplex_gap
         model.time_limit = self.parameter.time_limit_in_seconds
-        model.parameters.optimalitytarget = config.cplex_optimality_target
-        if config.cplex_export_model == True:
+        model.parameters.optimalitytarget = config.CPLEX_OPTIMALITY_TARGET
+        if config.CPLEX_EXPORT_MODEL == True:
             logging.info(model.export_as_lp())
-        sol = model.solve(log_output = config.cplex_enable_log)
+        sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
        
         
         solve_details = {
@@ -239,10 +239,10 @@ class CplexModelSolver:
         model.parameters.simplex.tolerances.feasibility = config.cplex_feasibility
         model.parameters.mip.tolerances.mipgap = config.cplex_gap
         model.time_limit = self.parameter.time_limit_in_seconds
-        model.parameters.optimalitytarget = config.cplex_optimality_target
-        if config.cplex_export_model == True:
+        model.parameters.optimalitytarget = config.CPLEX_OPTIMALITY_TARGET
+        if config.CPLEX_EXPORT_MODEL == True:
             logging.info(model.export_as_lp())
-        sol = model.solve(log_output = config.cplex_enable_log)
+        sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
         
         solve_details = {
             'model': model,
@@ -393,14 +393,14 @@ class CplexModelSolver:
             
 
         logging.debug('obj.function added!')
-        model.parameters.simplex.tolerances.feasibility = config.cplex_feasibility
-        model.parameters.mip.tolerances.mipgap = config.cplex_gap        
+
+        model.parameters.simplex.tolerances.feasibility = config.CPLEX_FEASIBILITY
+        model.parameters.mip.tolerances.mipgap = config.CPLEX_GAP
         model.time_limit = self.parameter.time_limit_in_seconds
-        model.parameters.optimalitytarget = config.cplex_optimality_target
-        if config.cplex_export_model == True:
+        model.parameters.optimalitytarget = config.CPLEX_OPTIMALITY_TARGET
+        if config.CPLEX_EXPORT_MODEL == True:
             logging.info(model.export_as_lp())
-        sol = model.solve(log_output = config.cplex_enable_log)
-        
+        sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
         
         solve_details = {
             'model': model,

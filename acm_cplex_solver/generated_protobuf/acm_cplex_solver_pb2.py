@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import wrappers_pb2 as google_dot_protobuf_dot_wrappers__pb2
-import generated_protobuf.acm_base_pb2 as acm__base__pb2
+import  generated_protobuf.acm_base_pb2 as acm__base__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
