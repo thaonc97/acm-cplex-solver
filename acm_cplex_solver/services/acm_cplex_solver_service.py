@@ -12,14 +12,10 @@ class AcmCplexSolverService(acm_cplex_solver_pb2_grpc.AcmCplexSolver):
 
     def Solve(self,request,context):
         
-        
-        Validator.validate_model(request.model)
-        
-        
+                
         parameter = SolverParameter(request.parameter)
-        option = Converter.convert_grpc_option_to_option(request.option)
         paper_model = Converter.convert_grpc_message_to_model(request.model, parameter.alpha_formula)
-        bc_solver = CplexModelSolver(paper_model, parameter, option)
+        bc_solver = CplexModelSolver(paper_model, parameter, )
         result = bc_solver.solve()
         if True: # solve a
             a_resource = request.model.campaigns_class_a

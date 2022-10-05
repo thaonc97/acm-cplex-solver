@@ -1,15 +1,24 @@
-from generated_protobuf.acm_cplex_solver_pb2 import ACSParameter, SolveMethod
+from generated_protobuf.acm_cplex_solver_pb2 import ACSParameter, ACSSolveMethod, ACSSolveIncludeClassAOption 
 
 
 class SolverParameter:
-    def __init__(self, acs_parameter : ACSParameter):    
-        """ if(acs_parameter.lower_ratio == None):
-            self.lower_ratio = 0.1   
-        else:
-            self.lower_ratio = acs_parameter.lower_ratio   """
-        self.lower_ratio = 0.1 
-        self.alpha_formula = 3        
-        self.evenness_priority = 1
-        self.method = SolveMethod.SOLVE_TWO_STEPS
-        self.time_limit_in_seconds = 3600
+    def __init__(self, acs_parameter : ACSParameter):
+
+        if(acs_parameter.lower_ratio<0 or acs_parameter.lower_ratio>1):
+            raise Exception("Tỉ lệ chặn dưới lower_ratio phải thuộc đoạn [0,1]")
+        self.lower_ratio = acs_parameter.lower_ratio
+
+        if(acs_parameter.alpha_formula not in [1,2,3]):
+            raise Exception("Công thức alpha phải là 1,2 hoặc 3")
+        self.alpha_formula = acs_parameter.alpha_formula  
+
+        if(acs_parameter.evenness_priority<0 or acs_parameter.evenness_priority>1):
+            raise Exception("Tham số đều - max tài nguyên phải thuộc đoạn [0,1]")
+        self.evenness_priority = acs_parameter.evenness_priority
+
+        self.method = acs_parameter.solve_method
+        self.time_limit_in_seconds = acs_parameter.time_limit_in_seconds
+        if(self.time_limit_in_seconds<3600):
+            self.time_limit_in_seconds=3600
+        self.include_class_a_option = acs_parameter.include_class_a_option
       

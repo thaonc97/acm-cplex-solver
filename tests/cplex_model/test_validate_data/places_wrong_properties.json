@@ -1,0 +1,234 @@
+[
+  {
+    "name": "Không đủ loại ctr",
+    "model": {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        },
+        {
+          "id": 1,
+          "ctrs": [
+            0.5,0.6
+          ],
+          "views": [
+            200,200
+          ],
+          "share_rate": 1,
+          "share_type": 0
+        }
+      ],
+      "campaigns_class_b_c": [
+        {
+          "id": 0,
+          "priority": 1,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 0,
+              "weight": 20
+            }
+          ],
+          "type": 1,
+          "is_network": true
+        }      
+      ],
+      "campaigns_class_a": [
+        {
+          "id": 1,
+          "priority": 0,
+          "total": 1.1,
+          "place_ids": [
+            1
+          ],
+          "dates": [
+            0,1
+          ],
+          "weights": [
+            {
+              "date": 1,
+              "weight": 10
+            }
+          ],
+          "type": 2,
+          "is_network": true
+        }
+      ]
+    },
+    "expected_string": "Địa điểm 0 không có đủ 3 loại ctr"
+  },
+  {
+    "name": "ctr < 0",
+    "model": {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            -0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        }
+      ],
+      "campaigns_class_b_c": [  
+      ],
+      "campaigns_class_a": [
+      ]
+    },
+    "expected_string": "Địa điểm 0 có ctr không thuộc khoảng [0,1]"
+  },
+  {
+    "name": "ctr > 1",
+    "model": {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            1.1,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        }
+      ],
+      "campaigns_class_b_c": [  
+      ],
+      "campaigns_class_a": [
+      ]
+    },
+    "expected_string": "Địa điểm 0 có ctr không thuộc khoảng [0,1]"
+  },
+  {
+    "name": "share_rate<0",
+    "model": {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": -0.1,
+          "share_type": 10
+        }
+      ],
+      "campaigns_class_b_c": [  
+      ],
+      "campaigns_class_a": [
+      ]
+    },
+    "expected_string": "Địa điểm 0 có share_rate không thuộc khoảng [0,1]"
+  },
+  {
+    "name": "share rate>1",
+    "model": {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 1.01,
+          "share_type": 10
+        }
+      ],
+      "campaigns_class_b_c": [  
+      ],
+      "campaigns_class_a": [
+      ]
+    },
+    "expected_string": "Địa điểm 0 có share_rate không thuộc khoảng [0,1]"
+  },  
+  {
+    "name": "view<0",
+    "model": {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,-1
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        },
+        {
+          "id": 1,
+          "ctrs": [
+            0.5,0.6
+          ],
+          "views": [
+            200,200
+          ],
+          "share_rate": 1,
+          "share_type": 0
+        }
+      ],
+      "campaigns_class_b_c": [  
+      ],
+      "campaigns_class_a": [
+      ]
+    },
+    "expected_string": "Địa điểm 0 có view < 0"
+  },
+  {
+    "name": "số lượng views các địa điểm khác nhau",
+    "model": {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 10
+        },
+        {
+          "id": 1,
+          "ctrs": [
+            0.5,0.6
+          ],
+          "views": [
+            200,200,200
+          ],
+          "share_rate": 1,
+          "share_type": 0
+        }
+      ],
+      "campaigns_class_b_c": [  
+      ],
+      "campaigns_class_a": [
+      ]
+    },
+    "expected_string": "Lượt view của địa điểm 1 khác 2 ngày"
+  }
+]
