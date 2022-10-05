@@ -12,5 +12,5 @@ class ClassAModel:
     ratio : List[float] # tỉ lệ chia sẻ network - domain, share_rate[k] = 1, nghĩa là tại địa điểm k tỉ lệ chia sẻ cho network là 100% 
     total_b_c_network: ndarray
     total_b_c_domain: ndarray
-    campaigns_a_network : List[List[List[int]]] # campaigns_a_network[u][k] = List[int] = danh sách campaign network cấp A tại u,k
-    campaigns_a_domain:  List[List[List[int]]] # campaigns_a_network[u][k] = List[int] = danh sách campaign network cấp A tại u,k
+    campaigns_class_a_network : List[List[List[int]]] # campaigns_a_network[u][k] = List[int] = danh sách campaign network cấp A tại u,k
+    campaigns_class_a_domain:  List[List[List[int]]] # campaigns_a_network[u][k] = List[int] = danh sách campaign network cấp A tại u,k
