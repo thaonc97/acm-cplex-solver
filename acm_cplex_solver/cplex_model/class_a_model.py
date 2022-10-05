@@ -1,19 +1,16 @@
 from dataclasses import astuple, dataclass, field
-<<<<<<< HEAD
-
-=======
 from typing import List
->>>>>>> 81f2f6a868c1f22cce4b1a6a07f09866b5683c5c
+
+from numpy import ndarray
 
 @dataclass
 class ClassAModel:
     """
     1 instance của class này thể hiện 1 số thông tin của 1 ngày-địa điểm (u,k)
     """
-    r: float
-    ratio: float
-    total_network_lefts: float
-    total_domain_lefts: float
-    x_a: float
-    campaigns_network :List[int] 
-    campaigns_domain : List[int]
+    r : ndarray # resource, chứa lượng view tại các địa điểm, r[u,k] là lượng view tại ngày u, địa điểm k
+    ratio : List[float] # tỉ lệ chia sẻ network - domain, share_rate[k] = 1, nghĩa là tại địa điểm k tỉ lệ chia sẻ cho network là 100% 
+    total_b_c_network: ndarray
+    total_b_c_domain: ndarray
+    campaigns_a_network : List[List[List[int]]] # campaigns_a_network[u][k] = List[int] = danh sách campaign network cấp A tại u,k
+    campaigns_a_domain:  List[List[List[int]]] # campaigns_a_network[u][k] = List[int] = danh sách campaign network cấp A tại u,k
