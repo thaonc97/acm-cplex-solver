@@ -79,32 +79,32 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #17.1 cho những campaign có group
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None)
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None) #17.2 cho những campaign ko có group
 
         model.add_constraints(x[t_prime, u, k] == 0
                             for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0
-                            for k in L[t] for t_prime in range(t_0) if t_prime != t)
+                            for k in L[t] for t_prime in range(t_0) if t_prime != t) #18
 
         model.add_constraints(x[t_prime, u, k] == 0
                             for t in range(t_0, T) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0], D[t][1] + 1) if w[t, u] != 0
-                            for k in L[t] for t_prime in range(t_0, T) if t_prime != t)
+                            for k in L[t] for t_prime in range(t_0, T) if t_prime != t) #19
 
         model.add_constraints(
             model.sum(x[t, u, k] for t in range(t_0) if t in B[k]
                     and u in range(D[t][0], D[t][1]+1) and w[t, u] != 0)
-            <= ratio[k]*r[u, k] for k in range(K) for u in range(U))  # Chặn cứng
+            <= ratio[k]*r[u, k] for k in range(K) for u in range(U))  #20 Chặn cứng 
 
         model.add_constraints(
             model.sum(x[t, u, k] for t in range(t_0, T) if t in B[k]
                     and u in range(D[t][0], D[t][1]+1) and w[t, u] != 0)
-            <= (1-ratio[k])*r[u, k] for k in range(K) for u in range(U))  # Chặn cứng
+            <= (1-ratio[k])*r[u, k] for k in range(K) for u in range(U))  #21 Chặn cứng
 
         # Chặn dưới
         model.add_constraints(x[t,u,k] >= self.parameter.lower_ratio*alpha[t,u,k]*min(1, r[u,k]*ratio[k]/deno) 
@@ -123,7 +123,7 @@ class CplexModelSolver:
                         for k in L[t]) for u in range(D[t][0],D[t][1]+1)  if w[t,u] !=0)  for t in range (T))
         
         opt_func_max_resource = -model.sum(z[t] for t in range(T))
-        model.minimize(self.parameter.evenness_priority * opt_func_even + (1 - self.parameter.evenness_priority) * opt_func_max_resource)
+        model.minimize(self.parameter.evenness_priority * opt_func_even + (1 - self.parameter.evenness_priority) * opt_func_max_resource) #16
         model.parameters.simplex.tolerances.feasibility = config.cplex_feasibility
         model.parameters.mip.tolerances.mipgap = config.cplex_gap
         model.time_limit = self.parameter.time_limit_in_seconds
@@ -183,39 +183,39 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) 
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #23.1 cho những campaign có group
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None)
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None) #23.2 cho những campaign ko có group
 
         model.add_constraints(
-            model.sum(x[t, u, k] for t in B[k] if u in range(D[t][0], D[t][1]+1) if w[t, u] != 0) + x_a[u, k] == r[u, k] for u in range(U) for k in range(K)) 
+            model.sum(x[t, u, k] for t in B[k] if u in range(D[t][0], D[t][1]+1) if w[t, u] != 0) + x_a[u, k] == r[u, k] for u in range(U) for k in range(K)) #24
 
         model.add_constraints(x[t_prime, u, k] == 0
                             for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0
-                            for k in L[t] for t_prime in range(t_0) if t_prime != t)
+                            for k in L[t] for t_prime in range(t_0) if t_prime != t)# 26
 
         model.add_constraints(x[t_prime, u, k] == 0
                             for t in range(t_0, T) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(D[t][0], D[t][1] + 1) if w[t, u] != 0
-                            for k in L[t] for t_prime in range(t_0, T) if t_prime != t)
+                            for k in L[t] for t_prime in range(t_0, T) if t_prime != t) #27
 
         model.add_constraints(x_a[u, k] == 0
                             for t in range(T) if priority[t] == CampaignPriority.CLASS_C
                             for u in range(U)
-                            for k in range(K) if u in range(D[t][0], D[t][1]+1) and w[t, u] != 0 and k in L[t])
+                            for k in range(K) if u in range(D[t][0], D[t][1]+1) and w[t, u] != 0 and k in L[t]) #25
 
         model.add_constraints(
             model.sum((x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) >= 
-                    np.sum([x_star[t,u,k] for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0 ]) for t in range(T))   
+                    np.sum([x_star[t,u,k] for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0 ]) for t in range(T)) #28
 
         model.add_constraints(
             model.sum(x[t,u,k] for t in range(t_0) if t in B[k] and u in range(D[t][0],D[t][1]+1) and w[t,u] !=0) 
-            <= ratio[k]*r[u,k] for k in range(K) if share_type[k] == 1 for u in range(U)) # Không cho network tràn sang domain
+            <= ratio[k]*r[u,k] for k in range(K) if share_type[k] == 1 for u in range(U)) #29 Không cho network tràn sang domain
             
         # Chặn dưới
         model.add_constraints(x[t,u,k] >= self.parameter.lower_ratio*alpha[t,u,k]*min(1, r[u,k]*ratio[k]/deno) 
@@ -235,7 +235,7 @@ class CplexModelSolver:
         
         opt_func_max_resource = -model.sum(z[t] for t in range(T))
 
-        model.minimize(self.parameter.evenness_priority * opt_func_even + (1 - self.parameter.evenness_priority) * opt_func_max_resource)
+        model.minimize(self.parameter.evenness_priority * opt_func_even + (1 - self.parameter.evenness_priority) * opt_func_max_resource) #22
         model.parameters.simplex.tolerances.feasibility = config.cplex_feasibility
         model.parameters.mip.tolerances.mipgap = config.cplex_gap
         model.time_limit = self.parameter.time_limit_in_seconds
