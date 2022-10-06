@@ -1,4 +1,4 @@
-from acm_cplex_solver.cplex_model.validate import Validator
+from cplex_model.validate import Validator
 from cplex_model.paper_model import PaperModel
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
 
