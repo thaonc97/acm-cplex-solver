@@ -1,3 +1,6 @@
+from typing import Tuple
+from grpc import xds_server_credentials
+from pandas import DataFrame
 from common.converter import Converter
 from cplex_model.paper_model import PaperModel
 from cplex_model.solver_parameter import SolverParameter
@@ -21,7 +24,7 @@ class CplexModelSolver:
         self.parameter = parameter
 
 
-    def solve(self):
+    def solve(self) -> Tuple[DataFrame, DataFrame]:
         methods = {
             ACSSolveMethod.SOLVE_TWO_STEPS : self._solve_b_c_2_steps,
             ACSSolveMethod.SOLVE_SOFT_CONSTRAINT: self._solve_b_c_soft
@@ -34,7 +37,7 @@ class CplexModelSolver:
         return solve_result
     
     
-    def _solve_b_c_2_steps(self):
+    def _solve_b_c_2_steps(self) -> Tuple[DataFrame, DataFrame]:
         """
         Sử dụng CPLEX để giải bài toán tối ưu 2 bước, không có biến nguyên, có cận dưới,
         mô hình sau này của a Phong.
@@ -45,7 +48,7 @@ class CplexModelSolver:
         
         return step_2_solve_details
 
-    def _solve_step_1(self):
+    def _solve_step_1(self) -> dict:
 
         K = self.paper_model.K
         U = self.paper_model.U
@@ -131,19 +134,12 @@ class CplexModelSolver:
         if config.CPLEX_EXPORT_MODEL == True:
             logging.info(model.export_as_lp())
         sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
-       
         
-        solve_details = {
-            'model': model,
-            'solution': sol,
-            'x_dict' : x,
-            'z_dict': z,
-            'alpha': alpha,
-        }
+        x_star = sol.get_value_dict(x)
 
-        return solve_details
+        return x_star
 
-    def _solve_step_2(self, step_1_solve_result):
+    def _solve_step_2(self, x_star) -> Tuple[DataFrame, DataFrame]:
         
         K = self.paper_model.K
         U = self.paper_model.U
@@ -161,14 +157,7 @@ class CplexModelSolver:
         share_type = self.paper_model.share_type
         cl = self.paper_model.cl         
         w = self.paper_model.w       
-        alpha = self.paper_model.alpha
-
-        
-        step_1_docplex_sol = step_1_solve_result['solution']
-        step_1_x_dict = step_1_solve_result['x_dict']
-        step_1_z_dict = step_1_solve_result['z_dict']
-        x_star = step_1_docplex_sol.get_value_dict(step_1_x_dict)
-        z_star = step_1_docplex_sol.get_value_dict(step_1_z_dict)
+        alpha = self.paper_model.alpha        
 
         model = Model("AcmSolver 2 steps-Step 2")
         campaign_list = np.arange(T)
@@ -243,20 +232,14 @@ class CplexModelSolver:
         if config.CPLEX_EXPORT_MODEL == True:
             logging.info(model.export_as_lp())
         sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
+
+        x_df = sol.get_value_df(x, key_column_names=['campaign_id', 'date', 'place_id'])
         
-        solve_details = {
-            'model': model,
-            'solution': sol,
-            'x_dict' : x,
-            'x_a_dict' :x_a,
-            'z_dict': z,
-            'alpha': alpha,
-        }
-
-        return solve_details
+        z_df = sol.get_value_df(z, key_column_names='campaign_id')
+        return x_df, z_df
 
 
-    def _solve_b_c_soft(self):
+    def _solve_b_c_soft(self) -> Tuple[DataFrame, DataFrame]:
         """
         Sử dụng CPLEX để giải bài toán tối ưu, có các biến nguyên,
         ràng buộc mềm, mô hình ban đầu của thầy Sơn
@@ -401,16 +384,13 @@ class CplexModelSolver:
         if config.CPLEX_EXPORT_MODEL == True:
             logging.info(model.export_as_lp())
         sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
-        
-        solve_details = {
-            'model': model,
-            'solution': sol,
-            'x_dict' : x,
-            'x_a_dict' :x_a,
-            'y_dict': y,
-            'z_dict': z,
-            'alpha': alpha,
-        }
-        #if get_click == True:
+
+         #if get_click == True:
         #    solve_details['click'] = click
-        return solve_details
+        
+        x_df = sol.get_value_df(x, key_column_names=['campaign_id', 'date', 'place_id'])        
+        z_df = sol.get_value_df(z, key_column_names='campaign_id')
+
+        return x_df, z_df
+
+       

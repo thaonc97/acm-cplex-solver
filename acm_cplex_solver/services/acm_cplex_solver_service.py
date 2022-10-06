@@ -15,7 +15,8 @@ class AcmCplexSolverService(acm_cplex_solver_pb2_grpc.AcmCplexSolver):
         parameter = SolverParameter(request.parameter)
         paper_model = Converter.convert_grpc_message_to_model(request.model, parameter.alpha_formula)
         bc_solver = CplexModelSolver(paper_model, parameter, )
-        x_bc = bc_solver.solve()
-        class_a_model_solver = Converter.convert_solve_details_to_class_a_model(x_bc, paper_model, request.model.campaigns_class_a)
+        x_bc_df, z_df = bc_solver.solve()
+        class_a_model_solver = Converter.convert_solve_details_to_class_a_model(x_bc_df, paper_model, request.model.campaigns_class_a)
         x_a = class_a_model_solver.solve()
-        return []
+        result = Converter.convert_solver_to_acs_result(x_bc_df, z_df, x_a)
+        return result
