@@ -1,13 +1,33 @@
-from cplex_model.validate import Validator
+from copy import deepcopy
+from typing import List, Tuple
+from google.protobuf import json_format
+from pandas import DataFrame
+from acm_cplex_solver.cplex_model.class_a_model_solver import ClassAModelSolver
+from acm_cplex_solver.cplex_model.validate import Validator
+from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSCampaign, ACSCampaignResult, ACSResult, ACSUnplannedResult
 from cplex_model.paper_model import PaperModel
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
 
 import numpy as np
-from google.protobuf.json_format import MessageToDict
-import string
 
 class Converter:
 
+
+    @staticmethod
+    def convert_solver_to_acs_result(x_bc_df : DataFrame, z_df : DataFrame, x_a : list) -> ACSResult:
+        acs_result = ACSResult()
+        x_bc_records = x_bc_df.to_dict('records')
+        for data in x_bc_records:
+            acs_result.campaign_results.append(ACSCampaignResult(**data))
+        
+        for data in x_a:           
+            acs_result.campaign_results.append(ACSCampaignResult(**data))
+
+        z_records = z_df.to_dict('records')
+        for data in z_records:
+            acs_result.unplanned_results.append(ACSUnplannedResult(**data))
+        
+        return acs_result 
 
     @staticmethod
     def convert_grpc_message_to_model(acs_model : ACSModel, alpha_formula: int) -> PaperModel:
@@ -86,7 +106,54 @@ class Converter:
 
         return paper_model
 
+    
     @staticmethod
-    def convert_grpc_message_to_list(acs_model : ACSModel, class_a_only = True):
-        a_resource = MessageToDict(acs_model.campaigns_class_a)
-        return a_resource
+    def convert_solve_details_to_class_a_model(
+        x_bc_df : DataFrame, paper_model : PaperModel, campaigns_class_a : List[ACSCampaign]) -> ClassAModelSolver: 
+        
+        t_0 = paper_model.t_0
+        U = paper_model.U
+        K = paper_model.K
+      
+
+        df_b_c_nw = x_bc_df[x_bc_df['campaign_id'] <t_0]
+        df_b_c_nw_grouped = df_b_c_nw.groupby(['date','place_id']).agg({"value":"sum"}).reset_index()
+        total_networks = df_b_c_nw_grouped["value"].to_numpy().reshape([U,K])
+
+        df_b_c_domain = x_bc_df[x_bc_df['campaign_id'] >=t_0]
+        df_b_c_domain_grouped = df_b_c_domain.groupby(['date','place_id']).agg({"value":"sum"}).reset_index()
+        
+        total_domains = df_b_c_domain_grouped["value"].to_numpy().reshape([U,K])
+
+        campaigns_class_a_network, campaigns_class_a_domain = Converter._get_running_a(U, K, campaigns_class_a)
+        a_model = ClassAModelSolver(paper_model.r, paper_model.ratio, total_networks, total_domains, campaigns_class_a_network, campaigns_class_a_domain)
+        
+
+        return a_model
+    
+    @staticmethod
+    def _get_running_a(U : int, K: int, campaigns_class_a : List[ACSCampaign]) -> Tuple[List[List[List[int]]], List[List[List[int]]]]: 
+        
+        campaigns_class_a_network = []
+
+        for u in range(U):
+            empty_list_u = []
+            for k in range(K):
+                empty_list_u.append([])            
+            campaigns_class_a_network.append(empty_list_u)
+
+        campaigns_class_a_domain = deepcopy(campaigns_class_a_network)
+
+        # add campaign.id vào ngày u, địa điểm k nếu campaign có chạy qua ngày u, địa điểm k, và date có weight>0 
+        for campaign in campaigns_class_a:
+            for u in range(campaign.dates[0], campaign.dates[1]+1):
+                for k in campaign.place_ids:
+                    for weight in campaign.weights:
+                        if(weight.weight > 0):
+                            if(campaign.is_network == True):
+                                campaigns_class_a_network[u][k].append(campaign.id)
+                            else:
+                                campaigns_class_a_domain[u][k].append(campaign.id)
+        
+        
+        return campaigns_class_a_network, campaigns_class_a_domain
