@@ -2,9 +2,9 @@ from copy import deepcopy
 from typing import List, Tuple
 from google.protobuf import json_format
 from pandas import DataFrame
-from acm_cplex_solver.cplex_model.class_a_model_solver import ClassAModelSolver
-from acm_cplex_solver.cplex_model.validate import Validator
-from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSCampaign, ACSCampaignResult, ACSResult, ACSUnplannedResult
+from cplex_model.class_a_model_solver import ClassAModelSolver
+from cplex_model.validate import Validator
+from generated_protobuf.acm_cplex_solver_pb2 import ACSCampaign, ACSCampaignResult, ACSResult, ACSUnplannedResult
 from cplex_model.paper_model import PaperModel
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
 
