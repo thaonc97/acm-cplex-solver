@@ -2,7 +2,7 @@ from acm_cplex_solver.common.utils import Utils
 
 import sys
 
-sys.path.append('/Projects/acm/acm/acmcplexsolver/acm_cplex_solver/')
+sys.path.append('../acm_cplex_solver/')
 
 #sys.path.append('../acm_cplex_solver/')
 

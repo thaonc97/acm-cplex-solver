@@ -1,0 +1,53 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: acm-cplex-solver-svc
+  namespace: acm-dev
+  labels:
+    app: acm-cplex-solver
+spec:
+  selector:
+    app: acm-cplex-solver
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 50051
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acm-cplex-solver-dep
+  namespace: acm-dev
+  labels:
+    app: acm-cplex-solver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acm-cplex-solver
+  template:
+    metadata:
+      labels:
+        app: acm-cplex-solver
+    spec:
+      imagePullSecrets:
+      - name: registry-dev-secret
+      containers:
+      - name: acm-cplex-solver
+        image: registry.awing.vn/acm-dev/acm-cplex-solver-svc:$BUILD_NUMBER
+        env:
+        volumeMounts:
+         - mountPath: "/etc/localtime"
+           name: awingtimezone
+         - name: config
+           mountPath: "/acm-cplex-solver/acm_solver/config.py"
+           subPath: "config.py"
+      volumes:
+       - name: awingtimezone
+         hostPath:
+          path: "/usr/share/zoneinfo/Asia/Ho_Chi_Minh"
+       - name: config
+         configMap: 
+          name: acm-cplex-solver-config
