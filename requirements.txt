@@ -1,3 +1,4 @@
+dataclasses-json
 docplex==2.15.194
 grpcio-tools==1.31.0
 numpy==1.18.5
