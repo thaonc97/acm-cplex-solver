@@ -1,11 +1,10 @@
 from copy import deepcopy
 from typing import List, Tuple
-from h11 import Data
-
+from google.protobuf import json_format
 from pandas import DataFrame
 from acm_cplex_solver.cplex_model.class_a_model_solver import ClassAModelSolver
 from acm_cplex_solver.cplex_model.validate import Validator
-from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSCampaign, ACSResult
+from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSCampaign, ACSCampaignResult, ACSResult, ACSUnplannedResult
 from cplex_model.paper_model import PaperModel
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
 
@@ -15,8 +14,19 @@ class Converter:
 
 
     @staticmethod
-    def convert_solver_to_acs_result(x_bc_df : DataFrame, z_df : DataFrame, x_a : dict) -> ACSResult:
+    def convert_solver_to_acs_result(x_bc_df : DataFrame, z_df : DataFrame, x_a : list) -> ACSResult:
         acs_result = ACSResult()
+        x_bc_records = x_bc_df.to_dict('records')
+        for data in x_bc_records:
+            acs_result.campaign_results.append(ACSCampaignResult(**data))
+        
+        for data in x_a:           
+            acs_result.campaign_results.append(ACSCampaignResult(**data))
+
+        z_records = z_df.to_dict('records')
+        for data in z_records:
+            acs_result.unplanned_results.append(ACSUnplannedResult(**data))
+        
         return acs_result 
 
     @staticmethod
