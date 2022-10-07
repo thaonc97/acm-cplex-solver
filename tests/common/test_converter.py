@@ -17,7 +17,7 @@ from acm_cplex_solver.common.converter import Converter
 
 def test_convert_grpc_message_to_acs_model_ok():
 
-    file_model = "./common/test_converter_data/2P_00_00_0.json" 
+    file_model = "./test_converter_data/2P_00_00_0.json" 
     _convert_ok(file_model)
 
 
