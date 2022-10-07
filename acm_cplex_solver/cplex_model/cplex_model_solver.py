@@ -81,12 +81,12 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t]>0) #
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None)
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] == 0)
 
         model.add_constraints(x[t_prime, u, k] == 0
                             for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C
