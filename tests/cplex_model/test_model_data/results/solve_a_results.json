@@ -1570,4 +1570,28 @@
   "createDate": {
     "$date": "2022-08-25T09:05:06.274+0000"
   }
+},{
+  "_id": {
+    "$oid": "63073b45613290aecdc42f55"
+  },
+  "problem_id": "no_campaign_a",
+  "campaign_id": -1,
+  "place_id": 0,
+  "date": 0,
+  "value": 30,
+  "createDate": {
+    "$date": "2022-08-25T09:05:06.274+0000"
+  }
+},{
+  "_id": {
+    "$oid": "63073b45613290aecdc42f55"
+  },
+  "problem_id": "no_campaign_a",
+  "campaign_id": -1,
+  "place_id": 1,
+  "date": 0,
+  "value": 8,
+  "createDate": {
+    "$date": "2022-08-25T09:05:06.274+0000"
+  }
 }]

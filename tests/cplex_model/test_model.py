@@ -14,10 +14,10 @@ import acm_cplex_solver.config as config
 from acm_cplex_solver.cplex_model.paper_model import PaperModel
 from acm_cplex_solver.cplex_model.cplex_model_solver import CplexModelSolver
 from acm_cplex_solver.cplex_model.solver_parameter import SolverParameter
-
+from acm_cplex_solver.cplex_model.class_a_model_solver import ClassAModelSolver
 
 class MockedACSParameter():
-    def __init__(self, **kwargs): 
+    def __init__(self): 
         self.lower_ratio = 0
         self.alpha_formula = 3
         self.evenness_priority = 1
@@ -26,7 +26,7 @@ class MockedACSParameter():
         self.include_class_a_option = True
 
 
-def correct_data_from_json(data):
+def correct_data_bc_from_json(data):
     data['ratio'] = data['share_rate']
     del data['share_rate']
     data['w'] = np.array(data['w'])
@@ -34,6 +34,13 @@ def correct_data_from_json(data):
     data['cl'] = cal_cl(data)
     data['CTR'] = np.array(data['CTR'])
     return data
+
+def correct_class_a_fromm_json(data):
+    data['r']= np.array(data['r'])
+    data['total_b_c_network'] = np.array(data['total_b_c_network'])
+    data['total_b_c_domain'] = np.array(data['total_b_c_domain'])
+    return data
+
 
 def prep_solve_result_json(json_solve_results):
     """Trả về thông dict dạng {problem id : DataFrame tương ứng với problem id}
@@ -111,3 +118,20 @@ def test_CplexModelSolver_solve_preset_data_two_steps_ok():
             print("problem_id: ",problem_id)
             e.args += ("problem_id: ",problem_id)
             raise
+
+def test_solve_a_preset_data_ok():
+    problem_ids = ['1_campaign_a_each','2_campaign_a_network','2_campaign_a_domain','no_campaign_a']
+    SOLVE_PATH = './cplex_model/test_model_data/results/solve_a_results.json'
+    with open(SOLVE_PATH) as f:
+        solve_result = json.load(f)
+    solve_result = prep_solve_result_json(solve_result)
+    for problem_id in problem_ids:
+        INPUT_PATH = f'./cplex_model/test_model_data/input_solve_a/data_{problem_id}.json'
+        with open(INPUT_PATH) as f:  
+            input = json.load(f)
+        input = correct_class_a_fromm_json(input)
+        a_model_solver = ClassAModelSolver(**input)
+        actual_df_x_a = pd.DataFrame(a_model_solver.solve())
+        actual_df_x_a = actual_df_x_a.sort_values(by = ['campaign_id', 'date', 'place_id']).reset_index(drop = True)
+        expected_df_x_a = solve_result[problem_id]
+        pd.testing.assert_frame_equal(expected_df_x_a, actual_df_x_a, check_dtype= False, check_like= True, check_exact= False,atol = 0.01)

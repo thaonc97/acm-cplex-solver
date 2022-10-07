@@ -1,0 +1,8 @@
+{
+    "r":[[40,20]],
+    "ratio" : [0.4,0.4],
+    "total_b_c_network" : [[0,0]],
+    "total_b_c_domain" : [[0,0]],
+    "campaigns_class_a_network" : [[[0],[0]]],
+    "campaigns_class_a_domain" : [[[1],[1]]]
+}
