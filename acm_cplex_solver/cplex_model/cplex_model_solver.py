@@ -81,12 +81,12 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #17.1: Với những campaign có group
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] > 0) #17.1: Với những campaign có group
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] #17.2: Với nhưng campaign ko có group
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None)
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] == 0)
 
         model.add_constraints(x[t_prime, u, k] == 0
                             for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C
@@ -171,12 +171,12 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #23.1 Với những campaign có group
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] > 0) #23.1 Với những campaign có group
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None) #23.2 Với những campaign ko có group
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] == 0) #23.2 Với những campaign ko có group
 
         model.add_constraints(
             model.sum(x[t, u, k] for t in B[k] if u in range(D[t][0], D[t][1]+1) if w[t, u] != 0) + x_a[u, k] == r[u, k] for u in range(U) for k in range(K))#24
