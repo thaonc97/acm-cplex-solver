@@ -72,16 +72,8 @@ class Converter:
             share_type = [place.share_type for place in places] # sharetype
         except:
             print("Có vẻ dữ liệu cũ chưa có share type, đặt toàn bộ là soft")
-            share_type = [0 for _ in range(K)]
-        
-        #Generate B_k
-        B =[]
-        for i in range(K):
-            current_place_campaign_list=[]
-            for j in range(len(L)) :
-                if i in L[j]:
-                    current_place_campaign_list.append(j)
-            B.append(current_place_campaign_list)
+            share_type = [0 for _ in range(K)]        
+       
 
         #Calculate w
         weights = [campaign.weights for campaign in campaigns_class_b_c]
@@ -94,15 +86,9 @@ class Converter:
                 else:
                     w[t,u] = 10
 
-        # Compute cl
-        cl = np.zeros([T, U, K])
-        for t in range(T):
-            if priority[t] == "CLASS_C":
-                for u in range(D[t][0], D[t][1]+1):
-                    for k in L[t]:
-                        cl[t, u, k] = 1
+      
 
-        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, B, cl, w, alpha_formula)
+        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, w, alpha_formula)
 
         return paper_model
 
