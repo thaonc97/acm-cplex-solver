@@ -31,7 +31,6 @@ def correct_data_from_json(data):
     del data['share_rate']
     data['w'] = np.array(data['w'])
     data['r'] = np.array(data['r'])
-    data['cl'] = cal_cl(data)
     data['CTR'] = np.array(data['CTR'])
     return data
 
@@ -68,17 +67,6 @@ def prep_solve_result_json(json_solve_results):
 
     return solve_result_dict
 
-def cal_cl(data):
-    T,U,K,D,L, priority = data['T'],data['U'], data['K'], data['D'], data['L'], data['priority']
-    data['alpha_formula'] = 3
-    data['r'] = np.array(data['r'])
-    cl = np.zeros([T, U, K])
-    for t in range(T):
-        if priority[t] == "CLASS_C":
-            for u in range(D[t][0], D[t][1]+1):
-                for k in L[t]:
-                    cl[t, u, k] = 1
-    return cl
 
 
 def test_CplexModelSolver_solve_preset_data_two_steps_ok():

@@ -22,22 +22,48 @@ class PaperModel:
     G : list # mảng chứa giá trị group_id của campaign, nếu = none thì ko có nhóm
     CTR : ndarray # CTR của địa điểm
     d : List[float] # lượng chạy của các campaign B,C
-    L : List[array] # danh sách địa điểm của campaign, L[t] là danh sách địa điểm của campaign t
-     
+    L : List[array] # danh sách địa điểm của campaign, L[t] là danh sách địa điểm của campaign t     
     t_0 : int # id của campaign domain đầu tiên tính từ 0 --> T-1
     ratio : List[float] # tỉ lệ chia sẻ network - domain, share_rate[k] = 1, nghĩa là tại địa điểm k tỉ lệ chia sẻ cho network là 100%  
     priority : List[int] # class B,C của các campaign cấp B,C
-    share_type : List[int] # Loại chia sẻ, thường dùng là SOFT
-    B : List[List[int]] # chứa danh sách chiến dịch chạy tại địa điểm K
-    cl : ndarray #  cl[t,u,k] = 1 nghĩa là campaign cấp C t chạy tại ngày u, điểm k 
+    share_type : List[int] # Loại chia sẻ, thường dùng là SOFT   
     w : ndarray # chứa trọng số của campaign tại các ngày, w[t,u] = 10, mặc định, 0 là 0 chạy, = 20 là chạy gấp đôi 10
     alpha_formula: int = 3 # công thức tính alpha, hiện tại chỉ dùng công thức số 3
+    B : List[List[int]] = field(init = False) # chứa danh sách chiến dịch chạy tại địa điểm K
+    cl : ndarray = field(init = False) #  cl[t,u,k] = 1 nghĩa là campaign cấp C t chạy tại ngày u, điểm k 
     alpha : ndarray = field(init = False) # alpha[t,u,k] = số lượng mong muốn của campaign t, ngày u, địa điểm k
     
     
-    def __post_init__(self): 
+    def __post_init__(self):        
+        
+        self._generate_B_k()
+        self._calculate_cl()
         self._re_update_w()
         self.alpha = self._calculate_alpha(self.alpha_formula) # hiện tại chỉ dùng công thức 3        
+
+
+    def _generate_B_k(self):
+        #Generate B_k
+        B =[]
+        for i in range(self.K):
+            current_place_campaign_list=[]
+            for j in range(len(self.L)) :
+                if i in self.L[j]:
+                    current_place_campaign_list.append(j)
+            B.append(current_place_campaign_list)
+
+        self.B = B
+
+    def _calculate_cl(self):
+        # Compute cl
+        cl = np.zeros([self.T, self.U, self.K])
+        for t in range(self.T):
+            if self.priority[t] == "CLASS_C":
+                for u in range(self.D[t][0], self.D[t][1]+1):
+                    for k in self.L[t]:
+                        cl[t, u, k] = 1
+        
+        self.cl = cl
 
     
     def _re_update_w(self):
