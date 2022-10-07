@@ -89,7 +89,7 @@ def test_CplexModelSolver_solve_preset_data_two_steps_ok():
         INPUT_PATH = f'./cplex_model/test_model_data/data_{problem_id}.json'
         with open(INPUT_PATH) as f:  
             input = json.load(f)
-        input = correct_data_from_json(input)
+        input = correct_data_bc_from_json(input)
         
 
         paper_model = PaperModel(**input)
