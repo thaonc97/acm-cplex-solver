@@ -1,11 +1,15 @@
+import sys
+
+#sys.path.append('../acm_cplex_solver/')#
+
+sys.path.append('D:\\Projects\\acm\\acm\\acmcplexsolver\\')
+
+sys.path.append('D:\\Projects\\acm\\acm\\acmcplexsolver\\acm_cplex_solver\\')
+
 from encodings import utf_8
 import json
 import pytest
 import google.protobuf.json_format as json_format
-
-import sys
-
-sys.path.append('../acm_cplex_solver/')
 
 
 from acm_cplex_solver.generated_protobuf import acm_cplex_solver_pb2
@@ -14,44 +18,44 @@ from acm_cplex_solver.common.validator import Validator
 
 def test_exception_validate_place_id_not_continuous_or_start_0():
 
-    file_model = "./test_validate_data/place_id_not_continuous_or_start_0.json" 
+    file_model = "./tests/common/test_validate_data/place_id_not_continuous_or_start_0.json" 
     _validate_exception(file_model)
 
 def test_exception_validate_empty_views():
-    file_model = "./test_validate_data/empty_place_views.json" 
+    file_model = "./tests/common/test_validate_data/empty_place_views.json" 
     _validate_exception(file_model)
 
 def test_exception_validate_campaign_class_b_total_less_than_0():
 
-    file_model = "./test_validate_data/campaign_class_b_total_less_than_0.json" 
+    file_model = "./tests/common/test_validate_data/campaign_class_b_total_less_than_0.json" 
     _validate_exception(file_model)
 
 def test_exception_validate_campaign_class_in_wrong_list():
 
-    file_model = "./test_validate_data/campaign_class_in_wrong_list.json" 
+    file_model = "./tests/common/test_validate_data/campaign_class_in_wrong_list.json" 
     _validate_exception(file_model)
 
 def test_validate_ok_empty_class_b_c_campaigns():
-    file_model = "./test_validate_data/empty_class_b_c_campaigns.json" 
+    file_model = "./tests/common/test_validate_data/empty_class_b_c_campaigns.json" 
     _validate_ok(file_model)
 
 def test_validate_ok_empty_all_campaigns():
-    file_model = "./test_validate_data/empty_all_campaigns.json" 
+    file_model = "./tests/common/test_validate_data/empty_all_campaigns.json" 
     _validate_ok(file_model)
 
 def test_exception_validate_campaign_id_not_continuous_or_start_0():
 
-    file_model = "./test_validate_data/campaign_id_not_continuous_or_start_0.json" 
+    file_model = "./tests/common/test_validate_data/campaign_id_not_continuous_or_start_0.json" 
     _validate_exception(file_model)
 
 def test_exception_validate_campaign_wrong_properties():
 
-    file_model = "./test_validate_data/campaign_wrong_properties.json" 
+    file_model = "./tests/common/test_validate_data/campaign_wrong_properties.json" 
     _validate_exception(file_model)
 
 def test_exception_validate_places_wrong_properties():
 
-    file_model = "./test_validate_data/places_wrong_properties.json" 
+    file_model = "./tests/common/test_validate_data/places_wrong_properties.json" 
     _validate_exception(file_model)
 
 

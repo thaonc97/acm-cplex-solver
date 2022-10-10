@@ -1,10 +1,10 @@
-from acm_cplex_solver.common.utils import Utils
-
 import sys
 
-sys.path.append('../acm_cplex_solver/')
+sys.path.append('D:\\Projects\\acm\\acm\\acmcplexsolver\\')
 
-#sys.path.append('../acm_cplex_solver/')
+from acm_cplex_solver.common.utils import Utils
+
+
 
 def test_check_continuous_list_empty():
     """ Case list rỗng

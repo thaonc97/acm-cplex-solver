@@ -1,20 +1,24 @@
+import sys
+
+#sys.path.append('../acm_cplex_solver/')#
+
+sys.path.append('D:\\Projects\\acm\\acm\\acmcplexsolver\\')
+sys.path.append('D:\\Projects\\acm\\acm\\acmcplexsolver\\acm_cplex_solver\\')
+
 from encodings import utf_8
 import json
 import google.protobuf.json_format as json_format
 
-import sys
 from acm_cplex_solver.common.utils import Utils
-
-
-sys.path.append('../acm_cplex_solver/')
 
 from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel
 from acm_cplex_solver.common.converter import Converter
+import pytest
 
 
 def test_convert_grpc_message_to_paper_model_ok():
 
-    file_model = "./test_converter_data/2P_00_00_0.json" 
+    file_model = "./tests/common/test_converter_data/2P_00_00_0.json" 
     _convert_ok(file_model)
 
 

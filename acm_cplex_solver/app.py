@@ -7,6 +7,7 @@ import config
 from services.acm_cplex_solver_service import AcmCplexSolverService
 from generated_protobuf import acm_cplex_solver_pb2_grpc
 
+
 def serve():
 
     logging.basicConfig(format=config.LOG_FORMATTER, level=config.LOG_LEVEL, datefmt='%d-%b-%y %H:%M:%S')
