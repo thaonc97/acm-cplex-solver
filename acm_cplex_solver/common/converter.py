@@ -3,7 +3,7 @@ from typing import List, Tuple
 from google.protobuf import json_format
 from pandas import DataFrame
 from class_a_model.class_a_model_solver import ClassAModelSolver
-from common.validator import Validator
+from .validator import Validator
 from generated_protobuf.acm_cplex_solver_pb2 import ACSCampaign, ACSCampaignResult, ACSResult, ACSUnplannedResult
 from paper_model.paper_model import PaperModel
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
