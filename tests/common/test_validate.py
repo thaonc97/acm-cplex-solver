@@ -1,10 +1,7 @@
 import sys
 
-#sys.path.append('../acm_cplex_solver/')#
-
-sys.path.append('D:\\Projects\\acm\\acm\\acmcplexsolver\\')
-
-sys.path.append('D:\\Projects\\acm\\acm\\acmcplexsolver\\acm_cplex_solver\\')
+sys.path.append('./')
+sys.path.append('./acm_cplex_solver/')
 
 from encodings import utf_8
 import json

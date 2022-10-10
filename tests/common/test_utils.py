@@ -1,6 +1,7 @@
 import sys
 
-sys.path.append('D:\\Projects\\acm\\acm\\acmcplexsolver\\')
+sys.path.append('./')
+sys.path.append('./acm_cplex_solver/')
 
 from acm_cplex_solver.common.utils import Utils
 
