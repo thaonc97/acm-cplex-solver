@@ -1,10 +1,10 @@
 from typing import Tuple
 from pandas import DataFrame
-from common.converter import Converter
-from cplex_model.paper_model import PaperModel
-from cplex_model.solver_parameter import SolverParameter
+from paper_model.paper_model import PaperModel
+from solver_parameter import SolverParameter
 from generated_protobuf.acm_cplex_solver_pb2 import ACSSolveMethod
 import config
+from common.consts import EPSILON
 from generated_protobuf.acm_base_pb2 import CampaignPriority
 
 #others
@@ -14,13 +14,14 @@ import numpy as np
 
 
 
-class CplexModelSolver: 
-    
-    EPSILON = 10**-6 
+class PaperModelSolver: 
+     
 
     def __init__(self, paper_model : PaperModel, parameter : SolverParameter):     
         self.paper_model = paper_model
         self.parameter = parameter
+
+        self.cplex_enable_log = config.LOG_LEVEL == "DEBUG" # ENABLE LOG THƯ VIỆN CPLEX
 
 
     def solve(self) -> Tuple[DataFrame, DataFrame]:
@@ -41,8 +42,9 @@ class CplexModelSolver:
         Sử dụng CPLEX để giải bài toán tối ưu 2 bước, không có biến nguyên, có cận dưới,
         mô hình sau này của a Phong.
         """
-        step_1_solve_details = self._solve_step_1()  # Solve B,C
+        logging.debug("Giải bài toán theo mô hình 2 bước.")      
 
+        step_1_solve_details = self._solve_step_1()  # Solve B,C
         step_2_solve_details = self._solve_step_2(step_1_solve_details)  # Solve B,C
         
         return step_2_solve_details
@@ -81,12 +83,12 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #17.1: Với những campaign có group
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] > 0) #17.1: Với những campaign có group
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] #17.2: Với nhưng campaign ko có group
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None)
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] == 0)
 
         model.add_constraints(x[t_prime, u, k] == 0
                             for t in range(t_0) if priority[t] == CampaignPriority.CLASS_C
@@ -121,7 +123,7 @@ class CplexModelSolver:
         opt_func_even = model.sum(
                 model.sum(
                     model.sum(
-                        1/(alpha[t,u,k]+self.EPSILON)**1*((1-cl[t,u,k])*x[t,u,k]*CTR[t,k]-alpha[t,u,k])**2 + cl[t,u,k]*(x[t,u,k] -r[u,k])**2 
+                        1/(alpha[t,u,k]+EPSILON)**1*((1-cl[t,u,k])*x[t,u,k]*CTR[t,k]-alpha[t,u,k])**2 + cl[t,u,k]*(x[t,u,k] -r[u,k])**2 
                         for k in L[t]) for u in range(D[t][0],D[t][1]+1)  if w[t,u] !=0)  for t in range (T))
         
         opt_func_max_resource = -model.sum(z[t] for t in range(T))
@@ -130,9 +132,9 @@ class CplexModelSolver:
         model.parameters.mip.tolerances.mipgap = config.CPLEX_GAP
         model.time_limit = self.parameter.time_limit_in_seconds
         model.parameters.optimalitytarget = config.CPLEX_OPTIMALITY_TARGET
-        if config.CPLEX_EXPORT_MODEL == True:
+        if self.cplex_enable_log == True:
             logging.info(model.export_as_lp())
-        sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
+        sol = model.solve(log_output = self.cplex_enable_log)
         
         x_star = sol.get_value_dict(x)
 
@@ -171,12 +173,12 @@ class CplexModelSolver:
             model.sum(model.sum((CTR[t_p,k]*x[t_p,u,k] 
                     for k in L[t_p] for u in range(D[t_p][0],D[t_p][1]+1) if w[t_p,u] !=0))
                     for t_p in range(T) if G[t_p]== G[t]) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is not None) #23.1 Với những campaign có group
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] > 0) #23.1 Với những campaign có group
 
         model.add_constraints(
             model.sum((CTR[t, k]*x[t, u, k]
                     for k in L[t] for u in range(D[t][0], D[t][1]+1) if w[t, u] != 0)) -z[t] == d[t] 
-                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] is None) #23.2 Với những campaign ko có group
+                    for t in range(T) if priority[t] == CampaignPriority.CLASS_B if G[t] == 0) #23.2 Với những campaign ko có group
 
         model.add_constraints(
             model.sum(x[t, u, k] for t in B[k] if u in range(D[t][0], D[t][1]+1) if w[t, u] != 0) + x_a[u, k] == r[u, k] for u in range(U) for k in range(K))#24
@@ -218,7 +220,7 @@ class CplexModelSolver:
         opt_func_even = model.sum(
                 model.sum(
                     model.sum(
-                        1/(alpha[t,u,k]+self.EPSILON)**1*((1-cl[t,u,k])*x[t,u,k]*CTR[t,k]-alpha[t,u,k])**2 + cl[t,u,k]*(x[t,u,k] -r[u,k])**2 
+                        1/(alpha[t,u,k]+EPSILON)**1*((1-cl[t,u,k])*x[t,u,k]*CTR[t,k]-alpha[t,u,k])**2 + cl[t,u,k]*(x[t,u,k] -r[u,k])**2 
                         for k in L[t]) for u in range(D[t][0],D[t][1]+1)  if w[t,u] !=0)  for t in range (T))
         
         opt_func_max_resource = -model.sum(z[t] for t in range(T))
@@ -228,9 +230,9 @@ class CplexModelSolver:
         model.parameters.mip.tolerances.mipgap = config.CPLEX_GAP
         model.time_limit = self.parameter.time_limit_in_seconds
         model.parameters.optimalitytarget = config.CPLEX_OPTIMALITY_TARGET
-        if config.CPLEX_EXPORT_MODEL == True:
+        if self.cplex_enable_log == True:
             logging.info(model.export_as_lp())
-        sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
+        sol = model.solve(log_output = self.cplex_enable_log)
 
         x_df = sol.get_value_df(x, key_column_names=['campaign_id', 'date', 'place_id'])
         
@@ -243,7 +245,10 @@ class CplexModelSolver:
         Sử dụng CPLEX để giải bài toán tối ưu, có các biến nguyên,
         ràng buộc mềm, mô hình ban đầu của thầy Sơn
         """
-      
+
+
+        logging.info("Giải bài toán theo mô hình ràng buộc mềm.")
+
         K = self.paper_model.K
         U = self.paper_model.U
         T = self.paper_model.T
@@ -350,7 +355,7 @@ class CplexModelSolver:
         opt_func_even = model.sum(
                 model.sum(
                     model.sum(
-                        1/(alpha[t,u,k]+self.EPSILON)**1*((1-cl[t,u,k])*x[t,u,k]*CTR[t,k]-alpha[t,u,k])**2 + cl[t,u,k]*(x[t,u,k] -r[u,k])**2 
+                        1/(alpha[t,u,k]+EPSILON)**1*((1-cl[t,u,k])*x[t,u,k]*CTR[t,k]-alpha[t,u,k])**2 + cl[t,u,k]*(x[t,u,k] -r[u,k])**2 
                         for k in L[t]) for u in range(D[t][0],D[t][1]+1)  if w[t,u] !=0)  for t in range (T))
         model.minimize(opt_func_even)
         
@@ -380,9 +385,9 @@ class CplexModelSolver:
         model.parameters.mip.tolerances.mipgap = config.CPLEX_GAP
         model.time_limit = self.parameter.time_limit_in_seconds
         model.parameters.optimalitytarget = config.CPLEX_OPTIMALITY_TARGET
-        if config.CPLEX_EXPORT_MODEL == True:
+        if self.cplex_enable_log == True:
             logging.info(model.export_as_lp())
-        sol = model.solve(log_output = config.CPLEX_ENABLE_LOG)
+        sol = model.solve(log_output = self.cplex_enable_log)
 
          #if get_click == True:
         #    solve_details['click'] = click

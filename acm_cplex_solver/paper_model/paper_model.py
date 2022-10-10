@@ -1,0 +1,214 @@
+from dataclasses import dataclass, field
+from typing import List
+from dataclasses_json import dataclass_json
+import numpy as np
+from numpy import array, ndarray
+
+from generated_protobuf.acm_base_pb2 import CampaignPriority
+
+@dataclass_json
+@dataclass
+class PaperModel:
+    """_summary_
+        Chứa model giống paper.
+    Returns:
+        _type_: _description_
+    """
+    T : int # tổng số chiến dịch cấp B,C, id chiến dịch từ 0--> T-1
+    U : int # tổng số ngày chạy của tất cả chiến dịch, đánh số từ 0 --> U-1
+    K : int # tổng số địa điểm, đánh số từ 0 --> K-1
+    r : ndarray # resource, chứa lượng view tại các địa điểm, r[u,k] là lượng view tại ngày u, địa điểm k
+    D : List[List[int]] # mảng chứa ngày chạy của các chiến dịch, mỗi chiến dịch có ngày chạy dạng [fromDate, toDate]
+    G : list # mảng chứa giá trị group_id của campaign, nếu = none thì ko có nhóm
+    CTR : ndarray # CTR của địa điểm
+    d : List[float] # lượng chạy của các campaign B,C
+    L : List[array] # danh sách địa điểm của campaign, L[t] là danh sách địa điểm của campaign t     
+    t_0 : int # id của campaign domain đầu tiên tính từ 0 --> T-1
+    ratio : List[float] # tỉ lệ chia sẻ network - domain, share_rate[k] = 1, nghĩa là tại địa điểm k tỉ lệ chia sẻ cho network là 100%  
+    priority : List[int] # class B,C của các campaign cấp B,C
+    share_type : List[int] # Loại chia sẻ, thường dùng là SOFT   
+    w : ndarray # chứa trọng số của campaign tại các ngày, w[t,u] = 10, mặc định, 0 là 0 chạy, = 20 là chạy gấp đôi 10
+    B : List[List[int]] = field(init = False) # chứa danh sách chiến dịch chạy tại địa điểm K
+    cl : ndarray = field(init = False) #  cl[t,u,k] = 1 nghĩa là campaign cấp C t chạy tại ngày u, điểm k 
+    alpha : ndarray = field(init = False) # alpha[t,u,k] = số lượng mong muốn của campaign t, ngày u, địa điểm k
+    
+    
+    def __post_init__(self):        
+        
+        self._generate_B_k()
+        self._calculate_cl()
+        self._re_update_w()
+        self.alpha = self._calculate_alpha()   
+
+
+    def _generate_B_k(self):
+        #Generate B_k
+        B =[]
+        for i in range(self.K):
+            current_place_campaign_list=[]
+            for j in range(len(self.L)) :
+                if i in self.L[j]:
+                    current_place_campaign_list.append(j)
+            B.append(current_place_campaign_list)
+
+        self.B = B
+
+    def _calculate_cl(self):
+        # Compute cl
+        cl = np.zeros([self.T, self.U, self.K])
+        for t in range(self.T):
+            if self.priority[t] == CampaignPriority.CLASS_C:
+                for u in range(self.D[t][0], self.D[t][1]+1):
+                    for k in self.L[t]:
+                        cl[t, u, k] = 1
+        
+        self.cl = cl
+
+    
+    def _re_update_w(self):
+        """Cập nhật trọng số cho các campaign:
+        Nếu 1 campaign type B bất kì có 1 ngày mà tất cả các địa điểm của nó
+        có campaign cấp C chạy, coi như w ngày hôm đó bằng 0.
+
+        Parameters
+        ----------
+        model_ready_data : list
+        have_c_network: np.array()
+            Ma trận tồn tại campaign c: have_c[u,k] = 1 nếu ngày u địa điểm k
+            có campaign type C network chạy
+        have_c_domain : np.array()
+            Tương tự have_c_network nhưng cho domain 
+        """
+
+        priority = self.priority
+        if CampaignPriority.CLASS_C not in priority:
+            pass  # Không cần tính toán thay đổi nếu ko có class C
+
+        T = self.T
+        U = self.U
+        K = self.K
+        t_0 = self.t_0
+        D = self.D
+        L = self.L
+        cl = self.cl
+        w = self.w.copy()
+        # Compute have_c
+        have_c_network = np.zeros([U, K])
+        have_c_domain = np.zeros([U, K])
+        for u in range(U):
+            for k in range(K):
+                have_c_network[u, k] = np.sum(
+                    [cl[t, u, k] for t in range(len(cl[:, u, k])) if t < t_0])
+                have_c_domain[u, k] = np.sum(
+                    [cl[t, u, k] for t in range(len(cl[:, u, k])) if t >= t_0])  
+        
+
+        not_have_c_network = 1- have_c_network # Ma trận không có campaign c
+        not_have_c_domain = 1 - have_c_domain
+
+        for t in range(T):
+            if priority[t] == CampaignPriority.CLASS_B:
+                if t < t_0:
+                    days_filled_by_c= np.sum(not_have_c_network[:,L[t]], axis = 1)
+
+                else:
+                    days_filled_by_c= np.sum(not_have_c_domain[:,L[t]], axis = 1)
+                    
+                for u in range (D[t][0],D[t][1] + 1):
+                    if days_filled_by_c[u] == 0: 
+                        w[t][u] = 0
+                    # Giải thích:  Nếu days_filled_by_c[u] = 0 tức tất cả giá trị của
+                    # not_have_c network (hoặc domain) vào ngày u của các địa điểm
+                    # mà campaign t chạy đều bằng 0 , điều này đồng nghĩa với tất
+                    #  cả các địa điểm vào ngày u đều có campaign cấp C chạy.
+        self.w = w
+    
+
+    def _calculate_alpha(self):
+        """
+        Tính theo công thức đều theo ngày ez của a Phong, nhưng:
+        Việc tinh alpha của các campaign cấp B phải xét xem 
+        ngày địa điểm đó có bị chiếm bởi campagin cấp C hay không.
+
+        """
+
+        K = self.K
+        U = self.U
+        T = self.T
+        r = self.r
+        D = self.D
+        G = self.G
+        CTR = self.CTR
+        d = self.d
+        w = self.w
+        L = self.L
+        B = self.B       
+        t_0 = self.t_0
+        ratio = self.ratio
+        priority = self.priority
+        share_type = self.share_type        
+        cl = self.cl          
+        w = self.w 
+        # Compute cl
+        cl = np.zeros([T,U,K])
+        for t in range(T):
+            if priority[t] == CampaignPriority.CLASS_C:
+                for u in range(D[t][0], D[t][1]+1):
+                    for k in L[t]:
+                        cl[t,u,k] = 1
+        
+        # Compute have_c
+        have_c_network = np.zeros([U,K])
+        have_c_domain = np.zeros([U,K])
+        for u in range(U):
+            for k in range(K):
+                have_c_network[u,k] = np.sum([cl[t,u,k] for t in range(len(cl[:,u,k])) if t <t_0])
+                have_c_domain[u,k] = np.sum([cl[t,u,k] for t in range(len(cl[:,u,k])) if t >= t_0])
+
+        # Calculate d_tu: lượng yêu cầu chạy theo ngày của từng campaign
+        d_tu = [self._calculate_d_t_u(d[t],w[t]) for t in range(T)]
+        d_tu = np.nan_to_num(d_tu)  # Chuyển những thằng nan về 0, có thể không cần
+
+        alpha =np.zeros((T,U,K))
+
+        for t in range(t_0):
+            for u in range(D[t][0],D[t][1]+1):
+                for k in L[t] :
+                    if have_c_network[u,k] == 0:
+                        deno = np.sum([r[u,k_bar] for k_bar in L[t] if have_c_network[u,k_bar] == 0])
+                        if deno !=0:
+                            alpha[t,u,k] = d_tu[t][u]*r[u,k]/deno
+                            
+        for t in range(t_0, T):
+            for u in range(D[t][0],D[t][1]+1):
+                for k in L[t] :
+                    if have_c_domain[u,k] == 0:
+                        deno = np.sum([r[u,k_bar] for k_bar in L[t] if have_c_domain[u,k_bar] == 0])
+                        if deno !=0:
+                            alpha[t,u,k] = d_tu[t][u]*r[u,k]/deno
+
+        return alpha
+
+    def _calculate_d_t_u(self,d,w):
+        """TÍnh d_t_u tức lượng view mong muốn chạy của campaign từng ngày
+
+        Parameters
+        ----------
+        d : int
+            Tổng lượng view mong muốn chạy của campaign
+        w : np.array()
+            mảng chưa trọng số theo từng ngày của campaign, w[i] là trọng số ngày i
+
+        Returns
+        -------
+        d_t_u:np.array
+            mảng lượng view mong muốn từng ngày d_t_u[u] là lượng chạy mong muốn ngày u
+        """
+
+        total_w = np.sum(w)
+        if total_w == 0:
+            d_t_u = np.zeros_like(w)
+            return d_t_u
+
+        d_t_u = d*w / total_w
+        return d_t_u

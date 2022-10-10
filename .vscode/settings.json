@@ -1,9 +1,13 @@
 {
-    "python.testing.pytestArgs": [
-        "tests"
+    "python.testing.pytestArgs": [        
+        "./tests/",
+        "-v",
+        "-s",
+        "--log-cli-level", "INFO",
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.terminal.activateEnvironment": true
 }
