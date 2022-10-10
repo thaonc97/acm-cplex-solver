@@ -58,7 +58,7 @@ class PaperModel:
         # Compute cl
         cl = np.zeros([self.T, self.U, self.K])
         for t in range(self.T):
-            if self.priority[t] == "CLASS_C":
+            if self.priority[t] == CampaignPriority.CLASS_C:
                 for u in range(self.D[t][0], self.D[t][1]+1):
                     for k in self.L[t]:
                         cl[t, u, k] = 1
@@ -168,7 +168,7 @@ class PaperModel:
             s_k_network = 0
             s_k_domain = 0
             for i in B[k]:
-                if priority[i] == 'CLASS_B':
+                if priority[i] == CampaignPriority.CLASS_B:
                     if i < t_0 :
                         s_k_network += d[i]/(len(L[i])*(D[i][1]+1-D[i][0]))
                     if i >= t_0:
@@ -181,7 +181,7 @@ class PaperModel:
         alpha_network =np.zeros((T,U,K))
         alpha_domain = np.zeros((T,U,K))
         for t in range(T):
-            if t < t_0 and priority[t] == 'CLASS_B':
+            if t < t_0 and priority[t] == CampaignPriority.CLASS_B:
                 deno = np.sum([w[t,u_bar]*r[u_bar,k_bar]/s_network[k_bar]
                             for u_bar in range(D[t][0], D[t][1]+1) for k_bar in L[t]])
 
@@ -195,7 +195,7 @@ class PaperModel:
                         for k in L[t]:
                             alpha_network[t,u,k] = 0  # If denominator = 0 then all associated alphas = 0
 
-            if t>=t_0 and priority[t] == 'CLASS_B':
+            if t>=t_0 and priority[t] == CampaignPriority.CLASS_B:
                 deno = np.sum([w[t,u_bar]*r[u_bar,k_bar]/s_domain[k_bar] 
                             for u_bar in range(D[t][0], D[t][1]+1) for k_bar in L[t]])
                 if deno !=0:
@@ -248,7 +248,7 @@ class PaperModel:
             s_k_network = 0
             s_k_domain = 0
             for i in B[k]:
-                if priority[i] == 'CLASS_B':
+                if priority[i] == CampaignPriority.CLASS_B:
                     if i < t_0 :
                         s_k_network += d[i]/(len(L[i])*(D[i][1]+1-D[i][0]))
                     if i >= t_0:
@@ -263,7 +263,7 @@ class PaperModel:
         for u in range(U):
             for t in range(T):
                 if D[t][0] <= u <= D[t][1]:
-                    if t < t_0 and priority[t] == 'CLASS_B':
+                    if t < t_0 and priority[t] == CampaignPriority.CLASS_B:
                         deno = np.sum([r[u,k_bar]/s_network[k_bar] for k_bar in L[t]])
 
                         if deno !=0:
@@ -274,7 +274,7 @@ class PaperModel:
                             for k in L[t]:
                                 alpha_network[t,u,k] = 0  # If denominator = 0 then all associated alphas = 0
 
-                    if t>=t_0 and priority[t] == 'CLASS_B':
+                    if t>=t_0 and priority[t] == CampaignPriority.CLASS_B:
                         deno = np.sum([r[u,k_bar]/s_domain[k_bar] for k_bar in L[t]])
                         
                         if deno !=0:
@@ -359,7 +359,7 @@ class PaperModel:
         # Compute cl
         cl = np.zeros([T,U,K])
         for t in range(T):
-            if priority[t] == "CLASS_C":
+            if priority[t] == CampaignPriority.CLASS_C:
                 for u in range(D[t][0], D[t][1]+1):
                     for k in L[t]:
                         cl[t,u,k] = 1

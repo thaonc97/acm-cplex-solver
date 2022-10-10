@@ -63,7 +63,7 @@ def prep_solve_result_json(json_solve_results):
         
     for problem_id in solve_result_dict:
         cur_prob_df =  pd.DataFrame(solve_result_dict[problem_id])
-        cur_prob_df= cur_prob_df.drop(['_id','createDate','problem_id'], axis =1)
+        cur_prob_df= cur_prob_df.drop(['_id','createDate','problem_id'], axis =1,errors = 'ignore')
         try:
             cur_prob_df= cur_prob_df.sort_values(by = ['campaign_id', 'date', 'place_id']).reset_index(drop = True)
             cur_prob_df = cur_prob_df[['campaign_id','date','place_id','value']]# Chỉnh thứ tự cột
@@ -78,7 +78,8 @@ def prep_solve_result_json(json_solve_results):
 
 def test_CplexModelSolver_solve_preset_data_two_steps_ok():
     problem_ids = ['1','2','3','6','7','8','9','10','1_b_domain_1_c_network','1_b_network_1_c_domain',
-    '1_domain_campaign_share_rate_1','1_network_campaign_share_rate_0','1c','2c','3c','hard_nw_1']
+    '1_domain_campaign_share_rate_1','1_network_campaign_share_rate_0','1c','2c','3c','hard_nw_1','group1','group2']
+    # problem_ids = ['1']
     SOLVE_PATH = './cplex_model/test_model_data/results/solve_bc_results.json'
     with open(SOLVE_PATH) as f:
         solve_result = json.load(f)
@@ -119,7 +120,7 @@ def test_solve_a_preset_data_ok():
             input = json.load(f)
         input = correct_class_a_fromm_json(input)
         a_model_solver = ClassAModelSolver(**input)
-        actual_df_x_a = pd.DataFrame(a_model_solver.solve())
-        actual_df_x_a = actual_df_x_a.sort_values(by = ['campaign_id', 'date', 'place_id']).reset_index(drop = True)
+        actual_df_x_a_unsorted = pd.DataFrame(a_model_solver.solve())
+        actual_df_x_a = actual_df_x_a_unsorted.sort_values(by = ['campaign_id', 'date', 'place_id']).reset_index(drop = True)
         expected_df_x_a = solve_result[problem_id]
         pd.testing.assert_frame_equal(expected_df_x_a, actual_df_x_a, check_dtype= False, check_like= True, check_exact= False,atol = 0.01)
