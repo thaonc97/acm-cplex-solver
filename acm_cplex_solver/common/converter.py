@@ -37,10 +37,11 @@ class Converter:
         
         places = acs_model.places
         campaigns_class_b_c = acs_model.campaigns_class_b_c 
-        campaigns_class_a = acs_model.campaigns_class_a
+        #campaigns_class_a = acs_model.campaigns_class_a
 
         share_rate = [place.share_rate for place in places]
-        D = [campaign.dates for campaign in campaigns_class_b_c] + [campaign.dates for campaign in campaigns_class_a]
+        #D = [campaign.dates for campaign in campaigns_class_b_c] + [campaign.dates for campaign in campaigns_class_a]
+        D = [campaign.dates for campaign in campaigns_class_b_c]
         #U = np.max(np.array(D)[:,1]) - np.min(np.array(D)[:,0]) +1 
         U = len(places[0].views) # tất cả các place có cùng số ngày views = U
         
