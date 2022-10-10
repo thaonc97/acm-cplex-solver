@@ -79,7 +79,7 @@ def test_CplexModelSolver_solve_preset_data_two_steps_ok():
     problem_ids = ['1','2','3','6','7','8','9','10','1_b_domain_1_c_network','1_b_network_1_c_domain',
     '1_domain_campaign_share_rate_1','1_network_campaign_share_rate_0','1c','2c','3c','hard_nw_1','group1','group2']
     # problem_ids = ['1']
-    SOLVE_PATH = './cplex_model/test_model_data/results/solve_bc_results.json'
+    SOLVE_PATH = './test_model_data/results/solve_bc_results.json'
     with open(SOLVE_PATH) as f:
         solve_result = json.load(f)
     solve_result = prep_solve_result_json(solve_result)
