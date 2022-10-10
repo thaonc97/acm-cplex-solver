@@ -2,10 +2,10 @@ from copy import deepcopy
 from typing import List, Tuple
 from google.protobuf import json_format
 from pandas import DataFrame
-from cplex_model.class_a_model_solver import ClassAModelSolver
-from cplex_model.validate import Validator
+from class_a_model.class_a_model_solver import ClassAModelSolver
+from common.validator import Validator
 from generated_protobuf.acm_cplex_solver_pb2 import ACSCampaign, ACSCampaignResult, ACSResult, ACSUnplannedResult
-from cplex_model.paper_model import PaperModel
+from paper_model.paper_model import PaperModel
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSParameter, ACSSolveRequest
 
 import numpy as np
@@ -30,7 +30,7 @@ class Converter:
         return acs_result 
 
     @staticmethod
-    def convert_grpc_message_to_model(acs_model : ACSModel, alpha_formula: int) -> PaperModel:
+    def convert_grpc_message_to_paper_model(acs_model : ACSModel) -> PaperModel:
 
         
         Validator.validate_model(acs_model)
@@ -88,7 +88,7 @@ class Converter:
 
       
 
-        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, w, alpha_formula)
+        paper_model = PaperModel(T, U, K, r, D, G, CTR, d, L, t_0, share_rate, priority, share_type, w)
 
         return paper_model
 

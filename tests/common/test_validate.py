@@ -10,7 +10,7 @@ sys.path.append('../acm_cplex_solver/')
 
 from acm_cplex_solver.generated_protobuf import acm_cplex_solver_pb2
 from acm_cplex_solver.generated_protobuf.acm_cplex_solver_pb2 import ACSModel, ACSCampaign, ACSPlace
-from acm_cplex_solver.cplex_model.validate import Validator
+from acm_cplex_solver.common.validator import Validator
 
 def test_exception_validate_place_id_not_continuous_or_start_0():
 

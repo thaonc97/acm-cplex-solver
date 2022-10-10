@@ -6,11 +6,7 @@ class SolverParameter:
 
         if(acs_parameter.lower_ratio<0 or acs_parameter.lower_ratio>1):
             raise Exception("Tỉ lệ chặn dưới lower_ratio phải thuộc đoạn [0,1]")
-        self.lower_ratio = acs_parameter.lower_ratio
-
-        if(acs_parameter.alpha_formula not in [1,2,3]):
-            raise Exception("Công thức alpha phải là 1,2 hoặc 3")
-        self.alpha_formula = acs_parameter.alpha_formula  
+        self.lower_ratio = acs_parameter.lower_ratio      
 
         if(acs_parameter.evenness_priority<0 or acs_parameter.evenness_priority>1):
             raise Exception("Tham số đều - max tài nguyên phải thuộc đoạn [0,1]")

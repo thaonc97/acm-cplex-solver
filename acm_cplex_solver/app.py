@@ -8,7 +8,8 @@ from services.acm_cplex_solver_service import AcmCplexSolverService
 from generated_protobuf import acm_cplex_solver_pb2_grpc
 
 def serve():
-    logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO, datefmt='%d-%b-%y %H:%M:%S')
+
+    logging.basicConfig(format=config.LOG_FORMATTER, level=config.LOG_LEVEL, datefmt='%d-%b-%y %H:%M:%S')
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=config.GRPC_MAX_WORKER))
     acm_cplex_solver_pb2_grpc.add_AcmCplexSolverServicer_to_server(
