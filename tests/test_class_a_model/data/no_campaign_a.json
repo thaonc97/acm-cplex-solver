@@ -1,0 +1,52 @@
+{
+  "input": {
+    "r": [
+      [
+        40,
+        20
+      ]
+    ],
+    "ratio": [
+      0.4,
+      0.4
+    ],
+    "total_b_c_network": [
+      [
+        4,
+        5
+      ]
+    ],
+    "total_b_c_domain": [
+      [
+        6,
+        7
+      ]
+    ],
+    "campaigns_class_a_network": [
+      [
+        [],
+        []
+      ]
+    ],
+    "campaigns_class_a_domain": [
+      [
+        [],
+        []
+      ]
+    ]
+  },
+  "output": [
+    {
+      "campaign_id": -1,
+      "date": 0,
+      "place_id": 0,
+      "value": 30
+    },
+    {
+      "campaign_id": -1,
+      "date": 0,
+      "place_id": 1,
+      "value": 8
+    }
+  ]
+}

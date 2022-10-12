@@ -1,0 +1,91 @@
+[  
+  {
+    "acs_model" : {
+      "places": [
+        {
+          "id": 0,
+          "ctrs": [
+            0.6,0.7
+          ],
+          "views": [
+            100,100
+          ],
+          "share_rate": 0.5,
+          "share_type": 0
+        },
+        {
+          "id": 1,
+          "ctrs": [
+            0.5,0.6
+          ],
+          "views": [
+            200,200
+          ],
+          "share_rate": 0.6,
+          "share_type": 1
+        }
+      ],
+      "campaigns_class_b_c": [
+        {
+          "id": 0,
+        "priority": 2,
+        "total": 300,
+        "place_ids": [
+          0, 1
+        ],
+        "dates": [
+          0, 0
+        ],
+        "weights": [
+          {
+            "date": 0,
+            "weight": 10
+          }
+        ],
+        "type": 0,
+        "is_network": true
+        },
+        {
+            "id": 1,
+          "priority": 2,
+          "total": 300,
+          "place_ids": [
+            0, 1
+          ],
+          "dates": [
+            0,0
+          ],
+          "weights": [
+            {
+              "date": 0,
+              "weight": 10
+            }
+          ],
+          "type": 0,
+          "is_network": false
+          }
+      ],
+      "campaigns_class_a": [
+      ]
+    },
+    "expected_paper_model": {
+      "T": 2,
+      "U": 2,
+      "K": 2,
+      "r": [[100.0,200.0], [100.0,200.0]],
+      "D": [[0, 0], [0, 0]],
+      "G": [0, 0],
+      "CTR": [[0.6, 0.5], [0.6, 0.5]],
+      "d": [300.0, 300.0],
+      "L": [[0, 1],[0, 1]],
+      "t_0": 1,
+      "ratio": [0.5, 0.6],
+      "priority": [2, 2],
+      "share_type": [0,1],
+      "B": [[0, 1],[0, 1]],
+      "cl": [[[1, 1], [0, 0]], [[1, 1], [0, 0]]],
+      "w": [[10, 0], [10, 0]],     
+      "alpha": [[[0, 0],[0, 0]], [[0, 0],[0, 0]]]
+    } 
+  }
+]
