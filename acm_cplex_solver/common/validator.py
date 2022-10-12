@@ -1,3 +1,4 @@
+from email.policy import default
 import numpy as np
 from generated_protobuf.acm_cplex_solver_pb2 import ACSModel
 from generated_protobuf.acm_base_pb2 import CampaignPriority
@@ -88,6 +89,26 @@ class Validator:
             if(len(place.views) != U):
                 raise Exception("Lượt view của địa điểm "+ str(place.id) + " khác " + str(U) + " ngày")
             
-            
+        # kiểm tra xem có 2 campaign cấp C của network hoặc domain cùng ngày - địa điểm hay không
+        num_c_network_u_k = np.zeros((U,K))
+        num_c_domain_u_k = np.zeros((U,K))
+        for campaign in campaigns_class_b_c:
+            if(campaign.priority == CampaignPriority.CLASS_C):                
+                    for u in range(campaign.dates[0], campaign.dates[1]+1):
+                        for k in campaign.place_ids:
+                            if(campaign.is_network is True):
+                                num_c_network_u_k[u,k]+=1
+                            else:
+                                num_c_domain_u_k[u,k]+=1
+        
+
+        num_c_network_gt_1 =  len(num_c_network_u_k[num_c_network_u_k>1])
+        num_c_domain_gt_1 =  len(num_c_domain_u_k[num_c_domain_u_k>1])
+        if(num_c_network_gt_1>0 or num_c_domain_gt_1>0):
+            raise Exception("Có 2 campaign cấp C của network hoặc domain cùng ngày - địa điểm")
+
+
+
+                
 
             

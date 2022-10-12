@@ -56,6 +56,17 @@ def test_exception_validate_places_wrong_properties():
     _validate_exception(file_model)
 
 
+def test_exception_validate_have_2_campaign_class_c():
+
+    file_model = "./tests/common/test_validate_data/have_2_campaign_class_c.json" 
+    _validate_exception(file_model)
+
+
+def test_ok_all():
+
+    file_model = "./tests/common/test_validate_data/ok_all.json" 
+    _validate_ok(file_model)
+
 
 def _validate_exception(file_model):
     with open(file_model, encoding='utf_8') as f:  
