@@ -1,0 +1,142 @@
+﻿syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+option csharp_namespace = "AcmMessage.AcmBase";
+
+service AcmBase {	
+	rpc GetAdministrativeUnitByCode(google.protobuf.StringValue) returns (AdministrativeUnit) {}
+	rpc GetAdministrativeUnitsByCodes(GetAdministrativeUnitsByCodesRequest) returns(AdministrativeUnitList){}
+	rpc GetAdministrativeUnitsByParentCode(GetAdministrativeUnitsByParentCodeRequest) returns (AdministrativeUnitList) {}	
+}
+message GetAdministrativeUnitsByCodesRequest {
+	repeated string codes = 1;
+}
+message GetAdministrativeUnitsByParentCodeRequest {
+	google.protobuf.StringValue code = 1;
+}
+
+message AdministrativeUnit {	
+	string code = 1;
+	string parent_unit_code = 2;
+	string name = 3;
+	AdministrativeUnitType type = 4;
+}
+
+message AdministrativeUnitList {
+	repeated AdministrativeUnit administrative_units =1;
+}
+
+enum AdministrativeUnitType  {
+	PROVINCE = 0;
+	DISTRICT = 1;
+	COMMUNE = 2;
+}
+
+message BaseObject{
+	google.protobuf.StringValue refTransaction = 1;
+	int64  current_user_id = 2;
+	int64  current_domain_id = 3;
+}
+message Int64List {
+	repeated int64 values = 1;
+}
+message Int32List {
+	repeated int32 values = 1;
+}
+enum PermissionCode {
+	FULL_CONTROL = 0;
+	READ_AND_EXECUTE = 1;
+	MODIFY = 2;
+	READ = 3;
+	WRITE = 4;
+	LIST_FOLDER_CONTENTS = 5;
+}
+enum TransactionCode {
+    INSERT = 0;
+    UPDATE = 1;
+    DELETE = 2;
+    LOGIN = 3;
+    LOGOUT = 4;
+}
+enum DemographicAgeRange {
+    UNDER_18 = 0;
+    FROM_18_TO_24 = 1;
+	FROM_25_TO_29 = 2;
+	FROM_30_TO_34 = 3;
+	FROM_35_TO_39 = 4;
+	FROM_40_TO_44 = 5;
+	OVER_45 = 6;
+}
+enum DemographicGender {
+	MALE = 0;
+	FEMALE = 1; 
+}
+enum CampaignType {   
+    DEFAULT = 0;
+    BANNER_STATIC = 1;
+    BANNER_EFFECT = 2;
+    BANNER_SLIDE = 3;
+    CPA = 4;
+	SURVEY = 5;
+	VIDEO = 6;
+	GAME = 7;
+	TEXT_MATCHING = 8;
+	OTHER = 9;
+}
+enum CampaignPriority {
+	CLASS_A = 0;
+    CLASS_B = 1;
+    CLASS_C = 2;
+}
+enum LogicalOperator {
+	EQUALITY = 0;
+	NOT_EQUAL = 1;
+	LESS_THAN = 2;
+	GREATER_THAN = 3;
+	LESS_THAN_OR_EQUAL_TO = 4;
+	GREATER_THAN_OR_EQUAL_TO = 5;
+	INTERSECT_EXIST = 6;
+	IN = 7;
+}
+enum PlaceFilterOperandType {
+	PLACE_ID = 0;
+	PLACE_GROUP_ID = 1;
+	DOMAIN_ID = 2;
+	SEARCH_STRING = 3;
+	PROVINCE_CODE = 4;
+	DISTRICT_CODE = 5;
+	COMMUNE_CODE = 6;
+}
+message PlaceFilterOperand {
+	PlaceFilterOperandType type = 1;
+	LogicalOperator operator = 2;
+	string value = 3;
+}
+message PlaceFilterOperandGroup {
+	repeated PlaceFilterOperand operands = 1;
+}
+message PlaceFilter {
+	repeated PlaceFilterOperandGroup operandGroups = 1;
+}
+message DirectoryRootDetail {
+	int64 root_id = 1;
+	int64 root_place = 2;
+	int64 root_workflow = 3;
+    int64 root_group = 4;
+    int64 rootCampaign = 5;
+    int64 root_page = 6;
+    int64 root_workflow_scheme = 7;
+    int64 root_archive = 8;
+    int64 root_page_welcome = 9;
+    int64 root_page_login = 10;
+	int64 root_template = 11;
+	int64 root_layout = 12;
+	int64 root_authentication_profile = 13;
+	int64 root_ap = 14;
+}
+
+enum ShareType {
+    SOFT = 0;
+    NETWORK_HARD = 1; // NETWORK không được lấn sang
+	DOMAIN_HARD = 2; // DOMAIN không được lấn sang 
+	HARD = 3 ; //Cả 2 bên đều không được lấn 
+}

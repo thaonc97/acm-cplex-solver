@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "acm_base.proto";
+package ACMSolver;
+option csharp_namespace = "AcmMessage.AcmSolver";
+
+service AcmSolver{
+    rpc InitProblem(InitProblemRequest) returns (google.protobuf.StringValue);
+    rpc SetPlaces(stream SetPlacesRequest) returns (google.protobuf.Empty) {} ;
+    rpc SetCampaigns(stream SetCampaignsRequest) returns (google.protobuf.Empty) {};
+    rpc SetGroups(SetGroupsRequest) returns (google.protobuf.Empty) {};
+    rpc Solve(SolveRequest) returns (google.protobuf.Empty) {};
+    rpc GetResults(google.protobuf.StringValue) returns (stream GetResultsResponse) {};
+    rpc GetUnplanned(google.protobuf.StringValue) returns(GetUnplannedResponse) {};
+}
+
+message SetPlacesRequest {
+    string problem_id = 1;
+    repeated ASPlace places = 2;
+}
+
+message SetCampaignsRequest{
+    string problem_id = 1;
+    repeated ASCampaign campaigns = 2;
+}
+
+message SetGroupsRequest{
+    string problem_id = 1;
+    repeated ASGroup groups = 2;
+}
+
+message InitProblemRequest{
+    ProblemType type = 1;
+    string name = 2;
+    float lower_ratio = 3;  // Cận của tỉ lệ ít nhất của lượng chạy yêu cầu của campaign mà campaign đấy có thể chạy tại 1 ngày địa điêm
+}
+
+message GetResultsResponse{
+    repeated ASResult results = 1; 
+}
+
+message GetUnplannedResponse{
+    //Lấy lượng view chưa đc plan của từng campaign
+    repeated UnplannedView unplanned_views = 1;
+}
+
+message SolveRequest{
+    string problem_id = 1;
+    float evenness_priority = 2;
+}
+
+message ASCampaign {
+    string campaign_id = 1;
+    bool is_network = 2;
+    google.protobuf.Timestamp start_date = 3;
+    google.protobuf.Timestamp expired_date = 4;
+    CampaignPriority priority = 5;
+    CampaignType type = 6;
+    google.protobuf.FloatValue total = 7;
+    repeated int64 place_ids = 8 [packed =true];
+    repeated CampaignWeight weights = 9;
+    repeated CampaignProfile profiles = 10;
+    google.protobuf.Int64Value group_id = 11;
+}
+
+message CampaignWeight {
+    google.protobuf.Timestamp date = 1;
+    float value = 2;
+}
+
+message CampaignProfile {
+    repeated CampaignProfileDetail profile_details = 1;
+}
+message CampaignProfileDetail {
+    ProfileType type = 1;
+    repeated int32 values = 2;
+}
+// dung rieng
+message PlaceView {
+    google.protobuf.Timestamp date = 1;
+    float value = 2;
+}
+
+message ASPlace {
+    int64 place_id = 2;
+    repeated PlaceCTR ctrs = 3;
+    repeated PlaceProfileRatio profiles_ratio = 4;
+    repeated PlaceView views = 5;
+    float share_rate = 6;
+    ShareType share_type = 7;
+}
+
+message PlaceCTR{
+    CampaignType type = 1;
+    float value = 2 ;
+}
+
+message PlaceProfileRatio {
+    ProfileType type = 1;
+    repeated float ratio = 2 [packed = true];
+}
+
+message ASResult {
+    string problem_id = 1;
+    string campaign_id = 2;
+    google.protobuf.Timestamp date = 3;
+    int64 place_id = 4;
+    float view = 5;
+}
+
+message ASGroup{
+    int64 group_id = 1;
+    string name = 2;
+    float total = 3;
+}
+
+message UnplannedView {
+    string problem_id = 1;
+    string campaign_id = 2;
+    float unplanned = 3;
+}
+
+enum ProblemType {
+    STANDALONE_PROBLEM = 0;
+    NETWORK_PROBLEM = 1;
+}
+
+enum ProfileType {
+    GENDER = 0;
+    AGE = 1;
+}
